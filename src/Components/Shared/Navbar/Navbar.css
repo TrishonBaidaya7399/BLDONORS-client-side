@@ -1,0 +1,13 @@
+.NavDefault {
+    color: black;
+    font-weight: 600; 
+  }
+  
+.NavActive {
+    color: red; 
+    font-weight: 600;
+  }
+  /* .MuiButton-root:hover, .MuiListItem-root:hover {
+    background-color: rgba(255, 0, 0, 0.5) !important;
+    color: white !important;
+  } */
