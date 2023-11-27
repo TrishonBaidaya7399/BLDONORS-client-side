@@ -4,17 +4,19 @@ import { useForm } from "react-hook-form";
 import { FaFacebookF } from "react-icons/fa";
 import { BsGoogle, BsGithub } from "react-icons/bs";
 import { Helmet } from "react-helmet-async";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../Providers/AuthProvider";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import authenticationImg from "../../../src/images/others/login.png";
 import bgImg from "../../../src/images/others/bg.png";
+import { AuthContext } from "../../Providers/AuthProvider";
+
+const img_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const img_hosting_api = `https://api.imgbb.com/1/upload?key=${img_hosting_key}`;
 
 const SignUp = () => {
   const axiosPublic = useAxiosPublic();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
   const {
     register,
@@ -23,11 +25,37 @@ const SignUp = () => {
     reset,
     formState: { errors },
   } = useForm();
-  const { createUser, updateUser, logOut, googleSignIn } =
-    useContext(AuthContext);
+  const { createUser, updateUser, logOut, googleSignIn } = useContext(AuthContext);
+
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [upazilas, setUpazilas] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/public/districts.json")
+      .then((response) => response.json())
+      .then((data) => setDistricts(data))
+      .catch((error) => console.error("Error fetching districts:", error))
+      .finally(() => setLoading(false));
+
+    fetch("/public/upazilas.json")
+      .then((response) => response.json())
+      .then((data) => setUpazilas(data))
+      .catch((error) => console.error("Error fetching upazilas:", error));
+  }, []);
+
+  const handleDistrictChange = (event) => {
+    const selectedDistrictId = event.target.value;
+    setSelectedDistrict(selectedDistrictId);
+
+    const filteredUpazilas = upazilas.filter(
+      (upazila) => upazila.district_id === selectedDistrictId
+    );
+    setUpazilas(filteredUpazilas);
+  };
 
   const handleGoogleSignIn = () => {
-    console.log("google button clicked");
     setError(null);
     googleSignIn()
       .then((result) => {
@@ -37,14 +65,15 @@ const SignUp = () => {
           name: result.user?.displayName,
           email: result.user?.email,
           photo: result.user?.photoURL,
-          role: "user",
+          role: "Donor",
+          status: "active",
         };
+
         axiosPublic
           .post("/users", userData)
           .then((res) => {
             navigate("/");
             if (res.data.insertedId) {
-              console.log("User info added to the database!");
               Swal.fire({
                 title: "Profile Created!",
                 text: `${
@@ -82,46 +111,56 @@ const SignUp = () => {
       });
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setError(null);
     setLoading(true);
-    console.log(data.name, data.photo);
+
+    const status = 'active';
+
+    const imageFile = { image: data.image[0] };
+    const res = await axiosPublic.post(img_hosting_api, imageFile, {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    });
+
     createUser(data.email, data.password)
       .then((result) => {
         const loggedUser = result.user;
         console.log(loggedUser);
-        updateUser(data.name, data.photo)
+        updateUser(data.name, res.data.data.display_url)
           .then(() => {
             setLoading(false);
-            console.log("Profile Updated");
             const userData = {
               name: data.name,
               email: data.email,
-              photo: data.photo,
-              role: "user",
+              photo: res.data.data.display_url,
+              status,
+              role: data.role,
+              bloodGroup: data.bloodGroup,
+              district: data.district,
+              upazila: data.upazila,
             };
-            axiosPublic.post("/users", userData).then((res) => {
+            axiosPublic.post('/users', userData).then((res) => {
               if (res.data.insertedId) {
-                console.log("User info added to the database!");
                 Swal.fire({
-                  title: "Profile Created!",
+                  title: 'Profile Created!',
                   text: `${
-                    result.user?.displayName ? result.user.displayName : "User"
+                    result.user?.displayName ? result.user.displayName : 'User'
                   } Profile created successfully!`,
                   imageUrl: result.user?.photoURL
                     ? result.user.photoURL || result.user.photoURL
-                    : "https://i.ibb.co/qnT81gF/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg",
+                    : 'https://i.ibb.co/qnT81gF/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg',
                   imageWidth: 200,
                   imageHeight: 200,
-                  imageAlt: "Custom image",
-                  confirmButtonText: "Ok!",
+                  imageAlt: 'Custom image',
+                  confirmButtonText: 'Ok!',
                 });
                 reset();
                 logOut()
                   .then(() => {
-                    console.log("Logged Out Successfully!");
                     setLoading(false);
-                    navigate("/login");
+                    navigate('/login');
                   })
                   .catch((error) => {
                     console.error(error.message);
@@ -142,10 +181,11 @@ const SignUp = () => {
         setError(error.message);
         setLoading(false);
       });
-    console.log("signup clicked");
   };
 
-  console.log(watch("example")); // watch input value by passing the name of it
+  
+
+  // console.log(watch("example")); // watch input value by passing the name of it
 
   return (
     <>
@@ -156,233 +196,270 @@ const SignUp = () => {
         className="hero min-h-screen p-[80px]"
         style={{ backgroundImage: `url(${bgImg})` }}
       >
-        <div className="hero-content flex-col lg:flex-row-reverse w-full h-full border-[3px] border-red-500">
-          <div className="text-center lg:text-left drop-shadow-[0_35px_35px_rgba(244,67,54,0.50)]">
-            <img src={authenticationImg} alt="" />
-          </div>
-          <div className="card flex-shrink-0 w-full max-w-sm ">
+        <div className=" w-full h-full border-[3px] border-red-500 rounded-lg bg-red-500 bg-opacity-10">
+          <div className="card w-full">
+            <h1 className="text-red-500 font-bold text-3xl mx-auto border-b-[3px] border-red-500 py-2 px-8">
+              Register Now
+            </h1>
             <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-              <h1 className="text-red-500 font-bold text-3xl mx-auto">
-                SignUp
-              </h1>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Name
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="name"
-                  {...register("name", { required: true })}
-                  name="name"
-                  className=" border-2 border-red-500 input input-bordered"
-                  required
-                />
-                {errors.name && (
-                  <span className="text-red-500">Name field is required</span>
-                )}
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Name
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    {...register("name", { required: true })}
+                    name="name"
+                    className=" border-2 border-red-500 input input-bordered"
+                    required
+                  />
+                  {errors.name && (
+                    <span className="text-red-500">Name field is required</span>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Email
+                    </span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="email"
+                    {...register("email", { required: true })}
+                    name="email"
+                    className=" border-2 border-red-500 input input-bordered"
+                    required
+                  />
+                  {errors.email && (
+                    <span className="text-red-500">
+                      Email field is required
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Profile Image URL
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="photo url"
-                  {...register("photo", { required: true })}
-                  name="photo"
-                  className=" border-2 border-red-500 input input-bordered"
-                  required
-                />
-                {errors.photo && (
-                  <span className="text-red-500">Photo field is required</span>
-                )}
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Password
+                    </span>
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="password"
+                    {...register("password", {
+                      required: true,
+                      minLength: 8,
+                      maxLength: 20,
+                      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
+                    })}
+                    name="password"
+                    className=" border-2 border-red-500 input input-bordered"
+                    required
+                  />
+                  {errors.password?.type === "required" && (
+                    <span className="text-red-500 mt-2">
+                      Password field is required
+                    </span>
+                  )}
+                  {errors.password?.type === "minLength" && (
+                    <span className="text-red-500 mt-2">
+                      Password should be minimum 8 characters
+                    </span>
+                  )}
+                  {errors.password?.type === "maxLength" && (
+                    <span className="text-red-500 mt-2">
+                      Password should not be more than 20 characters
+                    </span>
+                  )}
+                  {errors.password?.type === "pattern" && (
+                    <span className="text-red-500 mt-2">
+                      Password must contain
+                      <br />
+                      * Minimum 8 characters,
+                      <br />
+                      * at least one uppercase letter,
+                      <br />
+                      * one lowercase letter,
+                      <br />
+                      * one number and <br />* one special character
+                    </span>
+                  )}
+                </div>
+                {error && <span className="text-red-500">{error}</span>}
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Confirm Password
+                    </span>
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    {...register("confirmPassword", {
+                      required: true,
+                      validate: (value) => value === watch("password"),
+                    })}
+                    name="confirmPassword"
+                    className="border-2 border-red-500 input input-bordered"
+                    required
+                  />
+                  {errors.confirmPassword?.type === "required" && (
+                    <span className="text-red-500 mt-2">
+                      Confirm Password field is required
+                    </span>
+                  )}
+                  {errors.confirmPassword?.type === "validate" && (
+                    <span className="text-red-500 mt-2">
+                      Passwords do not match
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Email
-                  </span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="email"
-                  {...register("email", { required: true })}
-                  name="email"
-                  className=" border-2 border-red-500 input input-bordered"
-                  required
-                />
-                {errors.email && (
-                  <span className="text-red-500">Email field is required</span>
-                )}
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Blood Group
-                  </span>
-                </label>
-                <select
-                  {...register("bloodGroup", { required: true })}
-                  name="bloodGroup"
-                  className="border-2 border-red-500 input input-bordered"
-                  required
-                >
-                  <option value="Blood Group" disabled selected>
-                    Select Blood Group
-                  </option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                </select>
-                {errors.bloodGroup && (
-                  <span className="text-red-500">Blood group is required</span>
-                )}
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Blood Group
+                    </span>
+                  </label>
+                  <select
+                    {...register("bloodGroup", { required: true })}
+                    name="bloodGroup"
+                    className="border-2 border-red-500 input input-bordered"
+                    required
+                  >
+                    <option value="Blood Group" disabled selected>
+                      Select Blood Group
+                    </option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                  </select>
+                  {errors.bloodGroup && (
+                    <span className="text-red-500">
+                      Blood group is required
+                    </span>
+                  )}
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      District
+                    </span>
+                  </label>
+                  <select
+                    {...register("district", { required: true })}
+                    name="district"
+                    className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
+                    onChange={handleDistrictChange}
+                    value={selectedDistrict}
+                    required
+                  >
+                    <option value="" disabled selected>
+                      Select District
+                    </option>
+                    {loading ? (
+                      <option value="" disabled>
+                        Loading districts...
+                      </option>
+                    ) : (
+                      districts.map((district) => (
+                        <option key={district.id} value={district.id}>
+                          {district.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  {errors.district && (
+                    <span className="text-red-500">District is required</span>
+                  )}
+                </div>
               </div>
 
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    District
-                  </span>
-                </label>
-                <select
-                  {...register("district", { required: true })}
-                  name="district"
-                  className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
-                  required
-                >
-                  <option value="District" disabled selected>
-                    Select District
-                  </option>
-                  <option value="Barguna">Barguna</option>
-                  <option value="Barisal">Barisal</option>
-                  <option value="Bhola">Bhola</option>
-                  <option value="Jhalokati">Jhalokati</option>
-                  <option value="Patuakhali">Patuakhali</option>
-                  <option value="Pirojpur">Pirojpur</option>
-                  <option value="Bandarban">Bandarban</option>
-                  <option value="Brahmanbaria">Brahmanbaria</option>
-                  <option value="Chandpur">Chandpur</option>
-                  <option value="Chittagong">Chittagong</option>
-                  <option value="Comilla">Comilla</option>
-                  <option value="Cox's Bazar">{`Cox's Bazar`}</option>
-                  <option value="Feni">Feni</option>
-                  <option value="Khagrachhari">Khagrachhari</option>
-                  <option value="Lakshmipur">Lakshmipur</option>
-                  <option value="Noakhali">Noakhali</option>
-                  <option value="Rangamati">Rangamati</option>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Faridpur">Faridpur</option>
-                  <option value="Gazipur">Gazipur</option>
-                  <option value="Gopalganj">Gopalganj</option>
-                  <option value="Kishoreganj">Kishoreganj</option>
-                  <option value="Madaripur">Madaripur</option>
-                  <option value="Manikganj">Manikganj</option>
-                  <option value="Munshiganj">Munshiganj</option>
-                  <option value="Narayanganj">Narayanganj</option>
-                  <option value="Narsingdi">Narsingdi</option>
-                  <option value="Rajbari">Rajbari</option>
-                  <option value="Shariatpur">Shariatpur</option>
-                  <option value="Shariatpur">Shariatpur</option>
-                  <option value="Bagerhat">Bagerhat</option>
-                  <option value="Chuadanga">Chuadanga</option>
-                  <option value="Jessore">Jessore</option>
-                  <option value="Jhenaidah">Jhenaidah</option>
-                  <option value="Khulna">Khulna</option>
-                  <option value="Kushtia">Kushtia</option>
-                  <option value="Magura">Magura</option>
-                  <option value="Meherpur">Meherpur</option>
-                  <option value="Narail">Narail</option>
-                  <option value="Satkhira">Satkhira</option>
-                  <option value="Jamalpur">Jamalpur</option>
-                  <option value="Mymensingh">Mymensingh</option>
-                  <option value="Dinajpur">Dinajpur</option>
-                  <option value="Dinajpur">Dinajpur</option>
-                </select>
-                {errors.district && (
-                  <span className="text-red-500">District is required</span>
-                )}
-              </div>
+              <div className="flex flex-col lg:flex-row gap-6">
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Upazila
+                    </span>
+                  </label>
+                  <select
+                    {...register("upazila", { required: true })}
+                    name="upazila"
+                    className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
+                    required
+                  >
+                    <option value="Select Upazila" disabled selected>
+                      Select Upazila
+                    </option>
+                    {loading ? (
+                      <option value="" disabled>
+                        Loading upazilas...
+                      </option>
+                    ) : (
+                      upazilas.map((upazila) => (
+                        <option key={upazila.id} value={upazila.id}>
+                          {upazila.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  {errors.upazila && (
+                    <span className="text-red-500">Upazila is required</span>
+                  )}
+                </div>
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text text-gray-700 font-semibold">
+                      Select Role
+                    </span>
+                  </label>
+                  <select
+                    {...register("role", { required: true })}
+                    name="role"
+                    className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
+                    required
+                  >
+                    <option value="" selected disabled>
+                      Select Role
+                    </option>
+                    <option value="Donor">Donor</option>
+                    <option value="Volunteer">Volunteer</option>
+                  </select>
+                  {errors.role && (
+                    <span className="text-red-500">Role is required</span>
+                  )}
+                </div>
 
-              <div className="form-control">
+                <div className="form-control w-full">
                 <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Upazila
-                  </span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="Upazila"
-                  {...register("email", { required: true })}
-                  name="email"
-                  className=" border-2 border-red-500 input input-bordered"
-                  required
-                />
-                {errors.email && (
-                  <span className="text-red-500">
-                    Upazila field is required
-                  </span>
-                )}
+                    <span className="label-text text-gray-700 font-semibold">
+                      Upload Profile Image
+                    </span>
+                  </label>
+                  <input
+                    {...register("image", { required: true })}
+                    required
+                    type="file"
+                    className="file-input w-full max-w-xs rounded-md bg-gray-100"
+                  />
+                </div>
               </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text text-gray-700 font-semibold">
-                    Password
-                  </span>
-                </label>
-                <input
-                  type="password"
-                  placeholder="password"
-                  {...register("password", {
-                    required: true,
-                    minLength: 8,
-                    maxLength: 20,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-                  })}
-                  name="password"
-                  className=" border-2 border-red-500 input input-bordered"
-                  required
-                />
-                {errors.password?.type === "required" && (
-                  <span className="text-red-500 mt-2">
-                    Password field is required
-                  </span>
-                )}
-                {errors.password?.type === "minLength" && (
-                  <span className="text-red-500 mt-2">
-                    Password should be minimum 8 characters
-                  </span>
-                )}
-                {errors.password?.type === "maxLength" && (
-                  <span className="text-red-500 mt-2">
-                    Password should not be more than 20 characters
-                  </span>
-                )}
-                {errors.password?.type === "pattern" && (
-                  <span className="text-red-500 mt-2">
-                    Password must contain
-                    <br />
-                    * Minimum 8 characters,
-                    <br />
-                    * at least one uppercase letter,
-                    <br />
-                    * one lowercase letter,
-                    <br />
-                    * one number and <br />* one special character
-                  </span>
-                )}
-              </div>
-              {error && <span className="text-red-500">{error}</span>}
-              <div className="form-control mt-6">
+              <div className="form-control w-full mt-6">
                 <input
                   type="submit"
                   value={loading ? "Loading..." : "Sign Up"}

@@ -7,6 +7,15 @@ import Blog from "../../Pages/Blog/Blog";
 import Login from "../../Pages/Login/Login";
 import SignUp from "../../Pages/SignUp/SignUp";
 import DashBoard from "../../Layout/DashBoard";
+import AdminProfile from "../../Pages/DashBoard/Profile/AdminProfile";
+import DonorProfile from "../../Pages/DashBoard/Profile/DonorProfile";
+import CreateDonationReq from "../../Pages/DashBoard/CreteaDonatonReq/CreteaDonatonReq";
+import VolunteerProfile from "../../Pages/DashBoard/Profile/VolunteerProfile";
+import VolunteerHome from "../../Pages/DashBoard/Home/VolunteerHome";
+import DonationRequest from "../../Pages/DashBoard/DonationRequest/DonationRequest";
+import BloodDonationDetails from "../../Pages/BloodDonationDetails/BloodDonationDetails";
+import DonorHome from "../../Pages/DashBoard/Home/DonorHome";
+import CreateRequestToDonate from "../../Pages/DashBoard/CreateRequestToDonate/CreateRequestToDonate";
 
 export const router = createBrowserRouter([
     {
@@ -29,12 +38,50 @@ export const router = createBrowserRouter([
                 path: "/register",
                 element: <SignUp/>
             },
+            {
+                path: "/donationRequests",
+                element: <DonationRequest/>
+            },
+            {
+                path: "/bloodDonationDetails/:id",
+                element: <BloodDonationDetails/>,
+                loader: ({params})=> fetch(`http://localhost:5000/donationRequest/${params.id}`),
+            },
            
         ]
     },
     {
-        path: "/dashboard",
+        path: "dashboard",
         element: <DashBoard/>,
-        children: []
+        children: [
+            {
+                path:"adminProfile",
+                element: <AdminProfile/>
+            },
+            {
+                path:"donorProfile",
+                element: <DonorProfile/>
+            },
+            {
+                path:"volunteerProfile",
+                element: <VolunteerProfile/>
+            },
+            {
+                path:"createDonationRequest",
+                element: <CreateDonationReq/>
+            },
+            {
+                path:"volunteerHome",
+                element: <VolunteerHome/>
+            },
+            {
+                path:"donorHome",
+                element: <DonorHome/>
+            },
+            {
+                path:"create-donation-request",
+                element: <CreateRequestToDonate/>
+            },
+        ]
     },
 ])

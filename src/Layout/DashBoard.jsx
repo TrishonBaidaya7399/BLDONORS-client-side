@@ -1,33 +1,146 @@
 // import PropTypes from 'prop-types';
-import { GiHamburgerMenu } from 'react-icons/gi';
+import { CgProfile  } from "react-icons/cg";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { BiSolidDonateBlood } from "react-icons/bi";
+import { Link, Outlet } from "react-router-dom";
+import useUserInfo from "../Hooks/useUserInfo";
+import { FaHome } from "react-icons/fa";
 
 const DashBoard = () => {
+  const [userInfo, refetch] = useUserInfo();
+  console.log("UserInfo inside dashboard: ",userInfo);
+  console.log("UserInfo Role inside dashboard: ",userInfo.role);
+  refetch();
   return (
     <div>
       <div className="drawer">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           {/* Page content here */}
-          <label htmlFor="my-drawer" className="btn bg-[transparent] border-none shadow-none hover:bg-[transparent] drawer-button">
-           <GiHamburgerMenu className='text-2xl text-red-500'/>
+          <label
+            htmlFor="my-drawer"
+            className="btn bg-[transparent] border-none shadow-none hover:bg-[transparent] drawer-button"
+          >
+            <GiHamburgerMenu className="text-2xl text-red-500" />
           </label>
+          <Outlet></Outlet>
         </div>
 
-        {/* Drawer side ---------------------> */}
+        {/*<--------------------- Drawer side ---------------------> */}
         <div className="drawer-side">
           <label
             htmlFor="my-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-red-500 text-white">
+          <ul className="menu p-4 w-80 min-h-full bg-red-500 bg-opacity-90 drop-shadow-lg text-white pt-8">
             {/* Sidebar content here */}
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            <div className="flex flex-row gap-2 items-center drop-shadow-lg mb-4">
+              <div className="rounded-full bg-black border-2 border-white p-1">
+                <img
+                  src="../../src/images/logo/logo.png"
+                  className="w-[30px] h-[30px]"
+                />
+              </div>
+              <h1 className="text-white text-3xl font-bold">BLDONORS</h1>
+            </div>
+            <h1 className="text-white font-bold text-xl ml-6 mb-6">Welcome {userInfo?.name}</h1>
+
+            {/* <===================Admin=================> */}
+
+            {userInfo?.role === "Admin" && (
+              <Link
+                to="/dashboard/adminProfile"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <CgProfile className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Admin Profile</p>
+                </li>
+              </Link>
+            )}
+
+            {/* <===================Volunteer=================> */}
+
+            {userInfo?.role === "Volunteer" && (
+              <>
+              <Link
+                to="/dashboard/volunteerHome"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <FaHome className="text-3xl 2ext-white -mr-6" />
+                  </div>{" "}
+                  <p>Home</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/volunteerProfile"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <CgProfile  className="text-2xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Volunteer Profile</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/createDonationRequest"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <BiSolidDonateBlood classNam2="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Create New Donation</p>
+                </li>
+              </Link>
+              </>
+            )}
+
+            {/* <===================Donor=================> */}
+
+            {userInfo?.role === "Donor" && (
+             <>
+              <Link
+              to="/dashboard/donorHome"
+              className="text-white text-md font-bold"
+            >
+              <li className="flex flex-row  items-center">
+                <div>
+                  <FaHome className="text-3xl 2ext-white -mr-6" />
+                </div>{" "}
+                <p>Home</p>
+              </li>
+            </Link>
+              <Link
+                to="/dashboard/donorProfile"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <CgProfile  className="text-2xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Donor Profile</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/create-donation-request"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <CgProfile  className="text-2xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Create Request To Donate</p>
+                </li>
+              </Link>
+             </>
+            )}
           </ul>
         </div>
       </div>

@@ -107,7 +107,7 @@ const Login = () => {
           <div className="text-center lg:text-left drop-shadow-[0_35px_35px_rgba(244,67,54,0.50)]">
             <img src={authenticationImg} alt="" />
           </div>
-          <div className="card flex-shrink-0 w-full max-w-md ">
+          <div className="card flex-shrink-0 w-full max-w-lg ">
             <form onSubmit={handleLogin} className="card-body text-gray-700">
               <h1 className="text-red-500 font-bold text-3xl mx-auto">LOGIN</h1>
               <div className="form-control">

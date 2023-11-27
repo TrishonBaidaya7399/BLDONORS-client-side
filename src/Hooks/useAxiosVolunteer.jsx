@@ -4,14 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Providers/AuthProvider";
 
 // import PropTypes from 'prop-types';
-const axiosSecure = axios.create({
+const axiosValunteer = axios.create({
   baseURL: `http://localhost:5000`,
 });
-const useAxiosSecure = () => {
+const useAxiosVolunteer = () => {
   const navigate = useNavigate();
   const { logOut } = useContext(AuthContext);
   // Add a request interceptor
-  axiosSecure.interceptors.request.use(
+  axiosValunteer.interceptors.request.use(
     function (config) {
       // Do something before request is sent
       const token = localStorage.getItem("accessToken");
@@ -24,7 +24,7 @@ const useAxiosSecure = () => {
   );
 
   // Add a response interceptor
-  axiosSecure.interceptors.response.use(
+  axiosValunteer.interceptors.response.use(
     function (response) {
       return response;
     },
@@ -39,9 +39,9 @@ const useAxiosSecure = () => {
     }
   );
 
-  return axiosSecure;
+  return axiosValunteer;
 };
 
-useAxiosSecure.propTypes = {};
+useAxiosVolunteer.propTypes = {};
 
-export default useAxiosSecure;
+export default useAxiosVolunteer;
