@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import useUserInfo from "../../Hooks/useUserInfo";
+import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+
 
 const UserInfo = () => {
   const [userInfo, refetch] = useUserInfo();
@@ -9,8 +12,8 @@ const UserInfo = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const districtsResponse = await fetch("/public/districts.json");
-        const upazilasResponse = await fetch("/public/upazilas.json");
+        const districtsResponse = await fetch("/districts.json");
+        const upazilasResponse = await fetch("/upazilas.json");
 
         const districtsData = await districtsResponse.json();
         const upazilasData = await upazilasResponse.json();
@@ -30,9 +33,11 @@ const UserInfo = () => {
 
   return (
     <div>
-        <div className="flex justify-center">
-            <h1 className="text-3xl font-bold px-4 border-b-2 border-red-500 w-fit">{userInfo?.role} Profile</h1>
-        </div>
+      <div className="flex justify-center">
+        <h1 className="text-3xl font-bold px-4 border-b-2 border-red-500 w-fit">
+          {userInfo?.role} Profile
+        </h1>
+      </div>
       <div className="rounded-lg border-2 border-red-500 p-12 my-12 mx-[200px] flex flex-col-reverse lg:flex-row-reverse justify-center gap-12 bg-red-500 bg-opacity-20">
         <div className="infoPart flex-flex col gap-4">
           <h1 className="text-2xl">
@@ -41,27 +46,52 @@ const UserInfo = () => {
           </h1>
           <h1 className="text-xl">
             <span className="text-red-500 text-xl font-bold mr-2">Email:</span>
-            {userInfo?.role}
+            {userInfo?.email}
           </h1>
           <h1 className="text-xl">
             <span className="text-red-500 text-xl font-bold mr-2">Status:</span>
             {userInfo?.status}
           </h1>
           <h1 className="text-xl">
-            <span className="text-red-500 text-xl font-bold mr-2">Blood Group:</span>
+            <span className="text-red-500 text-xl font-bold mr-2">
+              Blood Group:
+            </span>
             {userInfo?.bloodGroup}
           </h1>
           <h1 className="text-xl">
-            <span className="text-red-500 text-xl font-bold mr-2">District:</span>
+            <span className="text-red-500 text-xl font-bold mr-2">
+              District:
+            </span>
             {districtName}
           </h1>
           <h1 className="text-xl">
-            <span className="text-red-500 text-xl font-bold mr-2">Upazila:</span>
+            <span className="text-red-500 text-xl font-bold mr-2">
+              Upazila:
+            </span>
             {upazilaName}
           </h1>
+          <Link to="/dashboard/editProfile">
+          <button className="bg-red-500 px-8 py-2 rounded-lg text-white mt-4 font-bold">
+          <div className="flex gap-2 items-center">
+            <div>
+              <p>Edit Profile Info </p>
+            </div>
+            <div>
+              <FaEdit/>
+            </div>
+          </div>
+          </button>
+            </Link>
         </div>
-        <div className="rounded-lg border-2 bg-white border-red-500 w-[300px] h-[300px]">
-            <img src={userInfo?.photo} className="w-full h-full" />
+        <div
+          className="rounded-lg border-2 bg-white border-red-500 w-[300px] h-[300px]"
+          style={{
+            backgroundImage: `url(${userInfo?.photo})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <img src="../../../src/images/bg/frame.png" className="w-full h-full" />
         </div>
       </div>
     </div>

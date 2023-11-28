@@ -41,9 +41,10 @@ const CreateRequestToDonate = () => {
     donationStatus: data.donationStatus,
     status: "pending",
     };
+    console.log(donationRequestData);
 
     axiosPublic
-      .post("/requestDonate", donationRequestData)
+      .post("/donationRequest", donationRequestData)
       .then((res) => {
           if (res.data.insertedId) {
             setError(false);
@@ -71,7 +72,7 @@ const CreateRequestToDonate = () => {
         });
       });
   };
-
+console.log(userInfo[0]);
   useEffect(() => {
     fetch("/public/districts.json")
       .then((response) => response.json())
@@ -342,11 +343,22 @@ const CreateRequestToDonate = () => {
             {errors.donationStatus && <span className="text-red-500">Donation Status is required</span>}
         </div>
         <div className="form-control w-full mt-6">
-          <input
+          {
+            userInfo[0].status === "active"
+            ?
+            <input
             type="submit"
             value={loading ? "Loading..." : "Register Request"}
             className="btn bg-red-500 bg-opacity-70 text-white"
           ></input>
+          :
+          <input
+            type="submit"
+            disabled
+            value={loading ? "Loading..." : "Register Request"}
+            className="btn bg-red-500 bg-opacity-70 text-white"
+          ></input>
+          }
         </div>
       </form>
     </div>

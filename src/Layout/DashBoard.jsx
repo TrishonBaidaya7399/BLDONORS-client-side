@@ -1,10 +1,12 @@
 // import PropTypes from 'prop-types';
 import { CgProfile  } from "react-icons/cg";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { MdKeyboardReturn  } from "react-icons/md";
 import { BiSolidDonateBlood } from "react-icons/bi";
 import { Link, Outlet } from "react-router-dom";
 import useUserInfo from "../Hooks/useUserInfo";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaUsers } from "react-icons/fa";
+
 
 const DashBoard = () => {
   const [userInfo, refetch] = useUserInfo();
@@ -21,7 +23,7 @@ const DashBoard = () => {
             htmlFor="my-drawer"
             className="btn bg-[transparent] border-none shadow-none hover:bg-[transparent] drawer-button"
           >
-            <GiHamburgerMenu className="text-2xl text-red-500" />
+            <GiHamburgerMenu className="text-4xl text-red-500" />
           </label>
           <Outlet></Outlet>
         </div>
@@ -49,6 +51,18 @@ const DashBoard = () => {
             {/* <===================Admin=================> */}
 
             {userInfo?.role === "Admin" && (
+             <>
+              <Link
+              to="/dashboard/adminHome"
+              className="text-white text-md font-bold"
+            >
+              <li className="flex flex-row  items-center">
+                <div>
+                  <FaHome className="text-3xl 2ext-white -mr-6" />
+                </div>{" "}
+                <p>Admin Home</p>
+              </li>
+            </Link>
               <Link
                 to="/dashboard/adminProfile"
                 className="text-white text-md font-bold"
@@ -60,6 +74,18 @@ const DashBoard = () => {
                   <p>Admin Profile</p>
                 </li>
               </Link>
+              <Link
+                to="/dashboard/allUsers"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <FaUsers className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>All Users</p>
+                </li>
+              </Link>
+             </>
             )}
 
             {/* <===================Volunteer=================> */}
@@ -74,7 +100,7 @@ const DashBoard = () => {
                   <div>
                     <FaHome className="text-3xl 2ext-white -mr-6" />
                   </div>{" "}
-                  <p>Home</p>
+                  <p>Volunteer Home</p>
                 </li>
               </Link>
               <Link
@@ -94,7 +120,7 @@ const DashBoard = () => {
               >
                 <li className="flex flex-row  items-center">
                   <div>
-                    <BiSolidDonateBlood classNam2="text-3xl text-white -mr-6" />
+                    <BiSolidDonateBlood className="text-3xl text-white -mr-6" />
                   </div>{" "}
                   <p>Create New Donation</p>
                 </li>
@@ -114,7 +140,7 @@ const DashBoard = () => {
                 <div>
                   <FaHome className="text-3xl 2ext-white -mr-6" />
                 </div>{" "}
-                <p>Home</p>
+                <p>Donor Home</p>
               </li>
             </Link>
               <Link
@@ -139,8 +165,30 @@ const DashBoard = () => {
                   <p>Create Request To Donate</p>
                 </li>
               </Link>
+              <Link
+                to="/dashboard/my-donation-requests"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <CgProfile  className="text-2xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>My Donation Requests</p>
+                </li>
+              </Link>
              </>
             )}
+            <Link
+                to="/"
+                className="text-white text-lg border-2 border-white font-bold mt-12 bg-black rounded-lg w-fit px-4"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <MdKeyboardReturn className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Return to Home</p>
+                </li>
+              </Link>
           </ul>
         </div>
       </div>

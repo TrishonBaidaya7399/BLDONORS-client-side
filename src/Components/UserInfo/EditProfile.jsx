@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import useAxiosPublic from "../../../Hooks/useAxiosPublic";
-import useUserInfo from "../../../Hooks/useUserInfo";
 
-const CreateDonationReq = () => {
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+import useAxiosPublic from "../../Hooks/useAxiosPublic";
+import useUserInfo from "../../Hooks/useUserInfo";
+
+const EditProfile = () => {
+    const userInfo = useUserInfo();
+  const [selectedDistrict, setSelectedDistrict] = useState(userInfo[0]?.district);
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const axiosPublic = useAxiosPublic();
-  const userInfo = useUserInfo();
-  console.log(userInfo[0].email);
+  console.log("Users Data: ", userInfo[0]);
 
+  console.log("These are the data which are need to be edited: ", userInfo[0] );
+  console.log(selectedDistrict);
   const {
     register,
     handleSubmit,
@@ -21,39 +24,34 @@ const CreateDonationReq = () => {
     reset,
     formState: { errors },
   } = useForm();
-
+  
+  console.log("ID: ", userInfo[0]?._id);
   const onSubmit = (data) => {
     // Handle form submission logic here
     console.log(data);
     setError(true);
     setLoading(true);
 
-    const donationRequestData = {
-      recipientName: data.name,
-      requesterName: userInfo[0].name,
-      requesterEmail: userInfo[0].email,
-      hospitalName: data.hospitalName,
-      fullAddress: data.fullAddress,
-      bloodGroup: data.bloodGroup,
-      district: data.district,
-      upazila: data.upazila,
-      date: data.date,
-      time: data.time,
-      donationStatus: data.donationStatus,
-      status: "pending",
-      donorName: "",
-      donorEmail: "",
+    const updatedData = {
+        name: data.name,
+        email: data.email,
+    bloodGroup: data.bloodGroup,
+    district: data.district,
+    upazila: data.upazila,
+    status: userInfo[0].status
     };
+    console.log(updatedData);
 
     axiosPublic
-      .post("/donationRequest", donationRequestData)
+      .put(`/users/${userInfo[0]?._id}`, updatedData)
       .then((res) => {
-        setError(false);
-        if (res.data.insertedId) {
+          if (res.data.modifiedCount>0) {
+            setError(false);
+            setLoading(false);
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: "New Donation Request added successfully!",
+            title: "User updated successfully!",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -63,10 +61,11 @@ const CreateDonationReq = () => {
       .catch((error) => {
         console.error(error.message);
         setError(false);
+        setLoading(false);
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: "Failed to add new Donation Request added!",
+          title: "User update request failed!",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -100,63 +99,45 @@ const CreateDonationReq = () => {
     <div className="flex flex-col border-[3px] rounded-lg p-12 mb-12 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
       <div className="flex justify-center">
         <h1 className="text-3xl font-bold pb-2 border-b-[3px] border-red-500 px-4 w-fit">
-          Create Donation Request
+          Edit Your Donation Request
         </h1>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="card-body">
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">
-              Recipient Name
+              Your Name
             </span>
           </label>
           <input
             type="text"
-            placeholder="Name"
+            defaultValue={userInfo[0]?.name}
+            placeholder={userInfo[0]?.name}
             {...register("name", { required: true })}
             name="name"
             className=" border-2 border-red-500 input input-bordered"
             required
           />
-          {errors.name && (
-            <span className="text-red-500">Name field is required</span>
-          )}
+    
         </div>
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">
-              Hospital Name
+            Your Email
             </span>
           </label>
           <input
-            type="text"
-            placeholder="hospitalName"
+            type="email"
+            defaultValue={userInfo[0]?.email}
+            placeholder={userInfo[0]?.email}
+            {...register("email", { required: true })}
+            name="email"
             className=" border-2 border-red-500 input input-bordered"
             required
-            {...register("hospitalName", { required: true })}
+            readOnly
           />
-          {errors.hospitalName && (
-            <span className="text-red-500">Hospital Name is required</span>
-          )}
+          
         </div>
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text text-gray-700 font-semibold">
-              Full Address
-            </span>
-          </label>
-          <input
-            type="text"
-            placeholder="fullAddress"
-            className=" border-2 border-red-500 input input-bordered"
-            required
-            {...register("fullAddress", { required: true })}
-          />
-          {errors.fullAddress && (
-            <span className="text-red-500">Full Address is required</span>
-          )}
-        </div>
-
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">
@@ -168,9 +149,10 @@ const CreateDonationReq = () => {
             name="bloodGroup"
             className="border-2 border-red-500 input input-bordered"
             required
+            defaultValue={userInfo[0]?.bloodGroup}
           >
-            <option value="" defaultValue="Select Blood Group">
-              Select Blood Group
+            <option value="" defaultValue={userInfo[0]?.bloodGroup}>
+            {userInfo[0]?.bloodGroup}
             </option>
             <option value="A+">A+</option>
             <option value="A-">A-</option>
@@ -185,45 +167,6 @@ const CreateDonationReq = () => {
             <span className="text-red-500">Blood group is required</span>
           )}
         </div>
-
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text text-gray-700 font-semibold">
-              Donation Date
-            </span>
-          </label>
-          <input
-            type="date"
-            name="date"
-            placeholder="DonationDate"
-            className=" border-2 border-red-500 input input-bordered"
-            required
-            {...register("date", { required: true })}
-          />
-          {errors.date && (
-            <span className="text-red-500">Donation Date is required</span>
-          )}
-        </div>
-
-        <div className="form-control w-full">
-          <label className="label">
-            <span className="label-text text-gray-700 font-semibold">
-              Donation Time
-            </span>
-          </label>
-          <input
-            type="time"
-            name="time"
-            placeholder="Donation Time"
-            className=" border-2 border-red-500 input input-bordered"
-            required
-            {...register("time", { required: true })}
-          />
-          {errors.time && (
-            <span className="text-red-500">Donation Date is required</span>
-          )}
-        </div>
-
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">
@@ -235,10 +178,10 @@ const CreateDonationReq = () => {
             name="district"
             className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
             onChange={handleDistrictChange}
-            value={selectedDistrict}
+            defaultValue={userInfo[0].district}
             required
           >
-            <option value="" defaultValue="Select District">
+            <option value="" defaultValue={userInfo[0].district}>
               Select District
             </option>
             {loading ? (
@@ -292,25 +235,11 @@ const CreateDonationReq = () => {
             <span className="text-red-500">Failed to new donation request</span>
           )}
         </div>
-        <div className="form-control">
-        <label className="label">
-            <span className="label-text text-gray-700 font-semibold">
-              Type Blood Donation Request Reason
-            </span>
-          </label>
-            <textarea 
-            type="text" 
-            name="donationStatus"
-            placeholder="Please describe the reason of Blood request"
-            className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh] h-[200px]"
-            {...register('donationStatus', { required: true })} defaultValue="Why you need blood?"/>
-            {errors.donationStatus && <span className="text-red-500">Donation Status is required</span>}
-        </div>
         <div className="form-control w-full mt-6">
           <input
             type="submit"
-            value={loading ? "Loading..." : "Register Request"}
-            className="btn bg-red-500 bg-opacity-70 text-white"
+            value={loading ? "Loading..." : "Update Profile"}
+            className="btn bg-red-500 font-semibold bg-opacity-70 text-white"
           ></input>
         </div>
       </form>
@@ -318,4 +247,4 @@ const CreateDonationReq = () => {
   );
 };
 
-export default CreateDonationReq;
+export default EditProfile;

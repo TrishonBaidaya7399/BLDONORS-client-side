@@ -1,0 +1,141 @@
+ <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Requester Name
+            </span>
+          </label>
+          <input
+            type="text"
+            value={userInfo[0]?.name}
+            placeholder={userInfo[0]?.name}
+            {...register("requesterName", { required: true })}
+            name="requesterName"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            readOnly
+          />
+    
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+            Requester Email
+            </span>
+          </label>
+          <input
+            type="email"
+            value={userInfo[0]?.email}
+            placeholder={userInfo[0]?.email}
+            {...register("requesterEmail", { required: true })}
+            name="requesterEmail"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            readOnly
+          />
+          
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Recipient Name
+            </span>
+          </label>
+          <input
+            type="text"
+            placeholder="Name"
+            {...register("name", { required: true })}
+            name="name"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            defaultValue={data?.recipientName}
+          />
+          {errors.name && (
+            <span className="text-red-500">Name field is required</span>
+          )}
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Hospital Name
+            </span>
+          </label>
+          <input
+            type="text"
+            placeholder="hospitalName"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            defaultValue={data?.hospitalName}
+            {...register("hospitalName", { required: true })}
+          />
+          {errors.hospitalName && (
+            <span className="text-red-500">Hospital Name is required</span>
+          )}
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Full Address
+            </span>
+          </label>
+          <input
+            type="text"
+            placeholder="fullAddress"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            defaultValue={data?.fullAddress}
+            {...register("fullAddress", { required: true })}
+          />
+          {errors.fullAddress && (
+            <span className="text-red-500">Full Address is required</span>
+          )}
+        </div>
+
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Blood Group
+            </span>
+          </label>
+          <select
+            {...register("bloodGroup", { required: true })}
+            name="bloodGroup"
+            className="border-2 border-red-500 input input-bordered"
+            required
+            value={data?.bloodGroup}
+          >
+            <option value="" defaultValue="Select Blood Group">
+              Select Blood Group
+            </option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+          {errors.bloodGroup && (
+            <span className="text-red-500">Blood group is required</span>
+          )}
+        </div>
+
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Donation Date
+            </span>
+          </label>
+          <input
+            type="date"
+            name="date"
+            placeholder="DonationDate"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            value={data?.date}
+            {...register("date", { required: true })}
+          />
+          {errors.date && (
+            <span className="text-red-500">Donation Date is required</span>
+          )}
+        </div>

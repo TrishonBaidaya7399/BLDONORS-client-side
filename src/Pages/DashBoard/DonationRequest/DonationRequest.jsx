@@ -8,29 +8,32 @@ const DonationRequest = () => {
   const [requests, setRequests] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
 console.log("requested data: ", requests);
-  useEffect(() => {
-    // Fetch districts and upazilas here
-    fetch("/public/districts.json")
-      .then((response) => response.json())
-      .then((data) => setDistricts(data))
-      .catch((error) => console.error("Error fetching districts:", error));
+// Fetch districts and upazilas here
+    fetch("/districts.json")
+    .then((response) => response.json())
+    .then((data) => setDistricts(data))
+    .catch((error) => console.error("Error fetching districts:", error));
 
-    fetch("/public/upazilas.json")
-      .then((response) => response.json())
-      .then((data) => setUpazilas(data))
-      .catch((error) => console.error("Error fetching upazilas:", error));
-
+    fetch("/upazilas.json")
+    .then((response) => response.json())
+    .then((data) => setUpazilas(data))
+    .catch((error) => console.error("Error fetching upazilas:", error));
+    
+    useEffect(() => {
     // Fetch donation requests
     axiosPublic
       .get("/donationRequest", { params: { status: "pending" } })
       .then((result) => {
         console.log("requested data: ", result.data);
         setRequests(result.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching donation request:", error);
+        setLoading(false)
       });
   }, [axiosPublic, setRequests]);
 
@@ -52,7 +55,12 @@ console.log("UserInfo Status: ",userInfo[0].status);
       <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         All Pending Donation Requests
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-h-[60vh] m-12  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-h-[100vh] m-12  rounded-md border-[5px] border-red-500">
+      {loading 
+      ? (
+          <p className="text-center text-2xl py-6"><span className="loading loading-spinner loading-lg"></span></p>
+      )
+      :
         <table className="table">
           {/* head */}
           <thead className="bg-red-500 text-lg text-white font-semibold border-2 border-red-500">
@@ -115,6 +123,7 @@ console.log("UserInfo Status: ",userInfo[0].status);
             )}
           </tbody>
         </table>
+        }
       </div>
     </div>
   );

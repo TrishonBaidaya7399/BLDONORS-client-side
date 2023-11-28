@@ -8,7 +8,7 @@ const Blog = () => {
 
   useEffect(() => {
     // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch('./public/blog.json')
+    fetch('/blog.json')
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error('Error fetching data:', error));

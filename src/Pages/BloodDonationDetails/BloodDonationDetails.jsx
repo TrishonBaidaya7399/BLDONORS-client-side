@@ -2,19 +2,17 @@ import PropTypes from "prop-types";
 import { useLoaderData } from "react-router-dom";
 import useUserInfo from "../../Hooks/useUserInfo";
 import { useEffect, useState } from "react";
-// import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const BloodDonationDetails = () => {
-    // const axiosPublic = useAxiosPublic();
-    const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const userInfo = useUserInfo();
   const [user, setUser] = useState(userInfo);
   useEffect(() => {
     setUser(userInfo);
   }, [userInfo]);
-  
+
   const donationDetails = useLoaderData();
   const {
     recipientName,
@@ -29,7 +27,7 @@ const BloodDonationDetails = () => {
     upazila,
     _id,
   } = donationDetails;
-  // Use useState to store the names
+
   const [districtName, setDistrictName] = useState("");
   const [upazilaName, setUpazilaName] = useState("");
 
@@ -40,70 +38,76 @@ const BloodDonationDetails = () => {
   };
 
   const getDistrictNameById = async (districtId) => {
-    const districtsData = await fetchData("/public/districts.json");
+    const districtsData = await fetchData("/districts.json");
     const district = districtsData.find((item) => item.id === districtId);
     return district ? district.name : "";
-};
-
-const getUpazilaNameById = async (upazilaId) => {
-    const upazilasData = await fetchData("/public/upazilas.json");
-    const upazila = upazilasData.find((item) => item.id === upazilaId);
-    return upazila ? upazila.name : "";
-};
-
-useEffect(() => {
-    // Use Promise.all to fetch district and upazila names concurrently
-    Promise.all([getDistrictNameById(district), getUpazilaNameById(upazila)])
-    .then(([districtName, upazilaName]) => {
-        setDistrictName(districtName);
-        setUpazilaName(upazilaName);
-    })
-    .catch((error) => {
-        console.error("Error fetching district and upazila names:", error);
-    });
-}, [district, upazila]);
-
-
-const handleConfirm = async (e, id) => {
-  e.preventDefault();
-
-  const donorData = {
-    donorName: userInfo?.name,
-    donorEmail: userInfo?.email,
   };
 
-  try {
-    // request to update the donation request
-    const result = await axiosSecure.patch(`/donationRequest/${id}`, donorData);
+  const getUpazilaNameById = async (upazilaId) => {
+    const upazilasData = await fetchData("/upazilas.json");
+    const upazila = upazilasData.find((item) => item.id === upazilaId);
+    return upazila ? upazila.name : "";
+  };
 
-    console.log(result);
+  useEffect(() => {
+    const fetchDistrictAndUpazilaNames = async () => {
+      try {
+        const [fetchedDistrictName, fetchedUpazilaName] = await Promise.all([
+          getDistrictNameById(donationDetails.district),
+          getUpazilaNameById(donationDetails.upazila),
+        ]);
 
-    if (result.data.modifiedCount > 0) {
+        setDistrictName(fetchedDistrictName);
+        setUpazilaName(fetchedUpazilaName);
+      } catch (error) {
+        console.error("Error fetching district and upazila names:", error);
+      }
+    };
+
+    if (
+      donationDetails.district !== district ||
+      donationDetails.upazila !== upazila
+    ) {
+      fetchDistrictAndUpazilaNames();
+    }
+  }, [donationDetails, district, upazila]);
+
+  const handleConfirm = async (e,id, status) => {
+    e.preventDefault();
+    const donorData = {
+      donorName: userInfo[0]?.name,
+      donorEmail: userInfo[0]?.email,
+      status: status,
+    };
+
+    try {
+      const result = await axiosSecure.patch(`/donationRequest/${id}`, donorData);
+
+      if (result.data.modifiedCount > 0) {
+        Swal.fire({
+          title: "Confirmed!",
+          icon: "success",
+          text: "Your request to donate blood is confirmed",
+          confirmButtonText: "Ok!",
+        });
+      } else {
+        Swal.fire({
+          title: "Failed!",
+          text: "Please update some information",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      console.error("Error confirming donation:", error);
       Swal.fire({
-        title: "Confirmed!",
-        icon: "success",
-        text: "Your request to donate blood is confirmed",
-        confirmButtonText: "Ok!",
-      });
-    } else {
-      Swal.fire({
-        title: "Failed!",
-        text: "Please update some information",
+        title: "Error!",
+        text: "An error occurred while confirming the donation",
         icon: "error",
-        confirmButtonText: "Try Again",
+        confirmButtonText: "Ok",
       });
     }
-  } catch (error) {
-    console.error("Error confirming donation:", error);
-    // Handle the error, for example, show an error message to the user
-    Swal.fire({
-      title: "Error!",
-      text: "An error occurred while confirming the donation",
-      icon: "error",
-      confirmButtonText: "Ok",
-    });
-  }
-};
+  };
 
   return (
     <div className="bg-red-500 bg-opacity-50 py-12">
@@ -144,12 +148,24 @@ const handleConfirm = async (e, id) => {
           </p>
         </div>
         <div className="flex justify-center">
+         {
+          status === "pending"
+          ?
           <button
-            onClick={() => document.getElementById("my_modal_3").showModal()}
-            className="bg-red-500 text-white text-xl font-bold px-12 py-2 rounded-lg mt-8"
-          >
-            Donate
-          </button>
+          onClick={() => document.getElementById("my_modal_3").showModal()}
+          className="bg-red-500 text-white text-xl font-bold px-12 py-2 rounded-lg mt-8"
+        >
+          Donate
+        </button>
+        :
+        <button
+        disabled
+        onClick={() => document.getElementById("my_modal_3").showModal()}
+        className="bg-red-500 text-white text-xl font-bold px-12 py-2 rounded-lg mt-8"
+      >
+        Already Requested to Donated
+      </button>
+         }
         </div>
       </div>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
@@ -162,41 +178,43 @@ const handleConfirm = async (e, id) => {
             </button>
           </form>
           <div className="flex justify-center">
-          <form>
-            <div className="flex gap-2 items-center mb-2">
-              <label htmlFor="donorName" className="font-bold block">
-                Donor Name:
-              </label>
-              <input
-                type="text"
-                id="donorName"
-                value={user[0]?.name}
-                readOnly
-                className="border p-2 border-green-600 rounded"
-              />
-            </div>
-            <div className="flex gap-2 items-center">
-              <label htmlFor="donorEmail" className="font-bold block">
-                Donor Email:
-              </label>
-              <input
-                type="text"
-                id="donorEmail"
-                value={user[0]?.email}
-                readOnly
-                className="border p-2 border-green-600 rounded"
-              />
-            </div>
-            {/* Other readonly fields */}
-            <div className="flex justify-center">
-            <button
-            onClick={(e)=>handleConfirm(e,_id)}
-              type="submit"
-              className="bg-green-600 px-4 py-2 rounded-lg text-white my-4"
-            >
-              Confirm Donation
-            </button></div>
-          </form></div>
+            <form>
+              <div className="flex gap-2 items-center mb-2">
+                <label htmlFor="donorName" className="font-bold block">
+                  Donor Name:
+                </label>
+                <input
+                  type="text"
+                  id="donorName"
+                  value={user[0]?.name}
+                  readOnly
+                  className="border p-2 border-green-600 rounded"
+                />
+              </div>
+              <div className="flex gap-2 items-center">
+                <label htmlFor="donorEmail" className="font-bold block">
+                  Donor Email:
+                </label>
+                <input
+                  type="text"
+                  id="donorEmail"
+                  value={user[0]?.email}
+                  readOnly
+                  className="border p-2 border-green-600 rounded"
+                />
+              </div>
+              {/* Other readonly fields */}
+              <div className="flex justify-center">
+                <button
+                  onClick={(e) => handleConfirm(e,_id, "inprogress")}
+                  type="submit"
+                  className="bg-green-600 px-4 py-2 rounded-lg text-white my-4"
+                >
+                  Confirm Donation
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </dialog>
     </div>

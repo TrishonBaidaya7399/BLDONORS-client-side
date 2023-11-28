@@ -9,16 +9,17 @@ import useAxiosPublic from "./useAxiosPublic";
 const useUserInfo = () => {
     const axiosPublic = useAxiosPublic();
     const {user} = useContext(AuthContext);
-    console.log("Inside useUserInfo: ",user?.email);
+    // console.log("Inside useUserInfo: ",user?.email);
     const { data: userInfo = [], refetch } = useQuery({
         queryKey: ["userInfo", user?.email],
+        enabled: !!user?.email,
         queryFn: async () => {
           const res = await axiosPublic.get(`/users/info?email=${user?.email}`);
-          console.log("User from database: ", res?.data);
+          // console.log("User from database: ", res?.data);
           return res.data;
         }
       });
-      console.log("UserInfo inside useUserInfo: ", userInfo);
+      // console.log("UserInfo inside useUserInfo: ", userInfo);
  return [userInfo, refetch]
 
 };

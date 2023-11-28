@@ -3,6 +3,7 @@
 import { FaHeart } from "react-icons/fa";
 
 const CurrentRequest = () => {
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-gray-200 pb-12 lg:px-[200px]">
       <div>

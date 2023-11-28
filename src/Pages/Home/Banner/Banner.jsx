@@ -3,6 +3,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from "react-router-dom";
 
 const Banner = () => {
   const settings = {
@@ -36,7 +37,7 @@ const Banner = () => {
                   assumenda excepturi exercitationem quasi. In deleniti eaque
                   aut repudiandae et a id nisi.
                 </p>
-                <button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button>
+                <Link to="/register"><button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button></Link>
               </div>
             </div>
           </div>
@@ -58,7 +59,7 @@ const Banner = () => {
                   assumenda excepturi exercitationem quasi. In deleniti eaque
                   aut repudiandae et a id nisi.
                 </p>
-                <button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button>
+                <Link to="/register"><button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button></Link>
               </div>
             </div>
           </div>
@@ -80,7 +81,7 @@ const Banner = () => {
                   assumenda excepturi exercitationem quasi. In deleniti eaque
                   aut repudiandae et a id nisi.
                 </p>
-                <button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button>
+                <Link to="/register"><button className="btn bg-black bg-opacity-50 text-white border-2 border-red-500 rounded-md">Get Started</button></Link>
               </div>
             </div>
           </div>

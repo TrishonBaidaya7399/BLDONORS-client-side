@@ -16,6 +16,12 @@ import DonationRequest from "../../Pages/DashBoard/DonationRequest/DonationReque
 import BloodDonationDetails from "../../Pages/BloodDonationDetails/BloodDonationDetails";
 import DonorHome from "../../Pages/DashBoard/Home/DonorHome";
 import CreateRequestToDonate from "../../Pages/DashBoard/CreateRequestToDonate/CreateRequestToDonate";
+import RequestedDonationDetails from "../../Pages/DashBoard/Home/RequestedDonationDetails";
+import EditDonationRequest from "../../Pages/DashBoard/EditDonationRequest/EditDonationRequest";
+import MyDonationRequestPage from "../../Pages/DashBoard/MyDonationRequestPage/MyDonationRequestPage";
+import EditProfile from "../../Components/UserInfo/EditProfile";
+import AdminHome from "../../Pages/DashBoard/Home/AdminHome";
+import AllUsers from "../../Pages/DashBoard/AllUsers/AllUsers";
 
 export const router = createBrowserRouter([
     {
@@ -63,6 +69,10 @@ export const router = createBrowserRouter([
                 element: <DonorProfile/>
             },
             {
+                path:"editProfile",
+                element: <EditProfile/>
+            },
+            {
                 path:"volunteerProfile",
                 element: <VolunteerProfile/>
             },
@@ -79,8 +89,30 @@ export const router = createBrowserRouter([
                 element: <DonorHome/>
             },
             {
+                path:"adminHome",
+                element: <AdminHome/>
+            },
+            {
+                path:"allUsers",
+                element: <AllUsers/>
+            },
+            {
                 path:"create-donation-request",
                 element: <CreateRequestToDonate/>
+            },
+            {
+                path:"my-donation-requests",
+                element: <MyDonationRequestPage/>
+            },
+            {
+                path: "RequestedDonationDetails/:id",
+                element: <RequestedDonationDetails/>,
+                loader: ({params})=> fetch(`http://localhost:5000/donationRequest/${params.id}`),
+            },
+            {
+                path: "editDonationRequest/:id",
+                element: <EditDonationRequest/>,
+                loader: ({params})=> fetch(`http://localhost:5000/donationRequest/${params.id}`),
             },
         ]
     },

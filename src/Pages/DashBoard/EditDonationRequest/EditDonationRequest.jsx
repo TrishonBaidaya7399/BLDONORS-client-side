@@ -3,16 +3,19 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useUserInfo from "../../../Hooks/useUserInfo";
+import { useLoaderData } from "react-router-dom";
 
-const CreateDonationReq = () => {
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+const EditDonationRequest = () => {
+    const requestedData = useLoaderData()
+  const [selectedDistrict, setSelectedDistrict] = useState(requestedData?.district);
   const [upazilas, setUpazilas] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const axiosPublic = useAxiosPublic();
   const userInfo = useUserInfo();
-  console.log(userInfo[0].email);
+
+  console.log("These are the data which are need to be edited: ", requestedData );
 
   const {
     register,
@@ -29,27 +32,28 @@ const CreateDonationReq = () => {
     setLoading(true);
 
     const donationRequestData = {
-      recipientName: data.name,
-      requesterName: userInfo[0].name,
-      requesterEmail: userInfo[0].email,
-      hospitalName: data.hospitalName,
-      fullAddress: data.fullAddress,
-      bloodGroup: data.bloodGroup,
-      district: data.district,
-      upazila: data.upazila,
-      date: data.date,
-      time: data.time,
-      donationStatus: data.donationStatus,
-      status: "pending",
-      donorName: "",
-      donorEmail: "",
+    requesterName: data.requesterName,
+    requesterEmail: data.requesterEmail,
+    recipientName: data.name,
+    hospitalName: data.hospitalName,
+    fullAddress: data.fullAddress,
+    bloodGroup: data.bloodGroup,
+    district: data.district,
+    upazila: data.upazila,
+    date: data.date,
+    time: data.time,
+    donationStatus: data.donationStatus,
+    status: "pending",
     };
+    console.log(donationRequestData);
+    console.log("ID: ", requestedData?._id);
 
     axiosPublic
-      .post("/donationRequest", donationRequestData)
+      .put(`/donationRequest/${requestedData?._id}`, donationRequestData)
       .then((res) => {
-        setError(false);
-        if (res.data.insertedId) {
+          if (res.data.modifiedCount>0) {
+            setError(false);
+            setLoading(false);
           Swal.fire({
             position: "top-end",
             icon: "success",
@@ -63,6 +67,7 @@ const CreateDonationReq = () => {
       .catch((error) => {
         console.error(error.message);
         setError(false);
+        setLoading(false);
         Swal.fire({
           position: "top-end",
           icon: "error",
@@ -100,10 +105,46 @@ const CreateDonationReq = () => {
     <div className="flex flex-col border-[3px] rounded-lg p-12 mb-12 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
       <div className="flex justify-center">
         <h1 className="text-3xl font-bold pb-2 border-b-[3px] border-red-500 px-4 w-fit">
-          Create Donation Request
+          Edit Your Donation Request
         </h1>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="card-body">
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+              Requester Name
+            </span>
+          </label>
+          <input
+            type="text"
+            value={userInfo[0]?.name}
+            placeholder={userInfo[0]?.name}
+            {...register("requesterName", { required: true })}
+            name="requesterName"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            readOnly
+          />
+    
+        </div>
+        <div className="form-control w-full">
+          <label className="label">
+            <span className="label-text text-gray-700 font-semibold">
+            Requester Email
+            </span>
+          </label>
+          <input
+            type="email"
+            value={userInfo[0]?.email}
+            placeholder={userInfo[0]?.email}
+            {...register("requesterEmail", { required: true })}
+            name="requesterEmail"
+            className=" border-2 border-red-500 input input-bordered"
+            required
+            readOnly
+          />
+          
+        </div>
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">
@@ -117,6 +158,7 @@ const CreateDonationReq = () => {
             name="name"
             className=" border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.recipientName}
           />
           {errors.name && (
             <span className="text-red-500">Name field is required</span>
@@ -133,6 +175,7 @@ const CreateDonationReq = () => {
             placeholder="hospitalName"
             className=" border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.hospitalName}
             {...register("hospitalName", { required: true })}
           />
           {errors.hospitalName && (
@@ -150,6 +193,7 @@ const CreateDonationReq = () => {
             placeholder="fullAddress"
             className=" border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.fullAddress}
             {...register("fullAddress", { required: true })}
           />
           {errors.fullAddress && (
@@ -168,6 +212,7 @@ const CreateDonationReq = () => {
             name="bloodGroup"
             className="border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.bloodGroup}
           >
             <option value="" defaultValue="Select Blood Group">
               Select Blood Group
@@ -198,6 +243,7 @@ const CreateDonationReq = () => {
             placeholder="DonationDate"
             className=" border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.date}
             {...register("date", { required: true })}
           />
           {errors.date && (
@@ -217,6 +263,7 @@ const CreateDonationReq = () => {
             placeholder="Donation Time"
             className=" border-2 border-red-500 input input-bordered"
             required
+            defaultValue={requestedData?.time}
             {...register("time", { required: true })}
           />
           {errors.time && (
@@ -235,7 +282,7 @@ const CreateDonationReq = () => {
             name="district"
             className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh]"
             onChange={handleDistrictChange}
-            value={selectedDistrict}
+            defaultValue={selectedDistrict}
             required
           >
             <option value="" defaultValue="Select District">
@@ -303,14 +350,14 @@ const CreateDonationReq = () => {
             name="donationStatus"
             placeholder="Please describe the reason of Blood request"
             className="border-2 border-red-500 input input-bordered overflow-y-auto max-h-[30vh] h-[200px]"
-            {...register('donationStatus', { required: true })} defaultValue="Why you need blood?"/>
+            {...register('donationStatus', { required: true })} defaultValue={requestedData?.donationStatus}/>
             {errors.donationStatus && <span className="text-red-500">Donation Status is required</span>}
         </div>
         <div className="form-control w-full mt-6">
           <input
             type="submit"
-            value={loading ? "Loading..." : "Register Request"}
-            className="btn bg-red-500 bg-opacity-70 text-white"
+            value={loading ? "Loading..." : "Update Request"}
+            className="btn bg-red-500 font-semibold bg-opacity-70 text-white"
           ></input>
         </div>
       </form>
@@ -318,4 +365,4 @@ const CreateDonationReq = () => {
   );
 };
 
-export default CreateDonationReq;
+export default EditDonationRequest;

@@ -9,3 +9,26 @@
     background: #ccc; 
     cursor: not-allowed;   
   }
+  /* Add these styles to your CSS */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin-right: 5px;
+}
+
+.pagination button {
+  cursor: pointer;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.pagination button:hover,
+.pagination button:focus {
+  background-color: #ddd;
+}

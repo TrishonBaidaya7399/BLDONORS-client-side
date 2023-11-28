@@ -6,7 +6,7 @@ import UserInfo from "../../../Components/UserInfo/UserInfo";
 const DonorProfile = () => {
   const axiosPublic = useAxiosPublic();
     useEffect(()=>{
-        axiosPublic.get(`/users/admin/:`)
+        axiosPublic.get(`/users`)
     },[axiosPublic])
     return (
         <div className="">
