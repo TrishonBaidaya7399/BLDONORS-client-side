@@ -1,6 +1,7 @@
 // import PropTypes from 'prop-types';
 import { CgProfile  } from "react-icons/cg";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { MdOutlineContentPaste } from "react-icons/md";
 import { MdKeyboardReturn  } from "react-icons/md";
 import { BiSolidDonateBlood } from "react-icons/bi";
 import { Link, Outlet } from "react-router-dom";
@@ -75,7 +76,7 @@ const DashBoard = () => {
                 </li>
               </Link>
               <Link
-                to="/dashboard/allUsers"
+                to="/dashboard/all-users"
                 className="text-white text-md font-bold"
               >
                 <li className="flex flex-row  items-center">
@@ -83,6 +84,28 @@ const DashBoard = () => {
                     <FaUsers className="text-3xl text-white -mr-6" />
                   </div>{" "}
                   <p>All Users</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/all-blood-donation-request"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <BiSolidDonateBlood className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>My Donation Requests</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/content-management"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <MdOutlineContentPaste className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Content Management</p>
                 </li>
               </Link>
              </>

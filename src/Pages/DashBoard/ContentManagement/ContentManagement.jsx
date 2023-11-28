@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-const Blog = () => {
+const ContentManagement = () => {
   const [posts, setPosts] = useState([]);
   const [showAll, setShowAll] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState([]);
 
   useEffect(() => {
     // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch('/blog.json')
+    fetch("/blog.json")
       .then((response) => response.json())
       .then((data) => setPosts(data))
-      .catch((error) => console.error('Error fetching data:', error));
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
   const handleSearch = () => {
@@ -23,7 +24,7 @@ const Blog = () => {
   };
 
   const handleResetSearch = () => {
-    setSearchText('');
+    setSearchText("");
     setSearchResult([]);
     setShowAll(false);
   };
@@ -45,7 +46,7 @@ const Blog = () => {
           onChange={(e) => setSearchText(e.target.value)}
           className=" p-3 rounded-l-md w-full border-2 border-red-500"
         />
-         {searchText && (
+        {searchText && (
           <button
             className="absolute right-0 btn text-red-500 bg-[transparent] hover: bg-[transparent] shadow-none border-none text-3xl"
             onClick={handleResetSearch}
@@ -53,7 +54,7 @@ const Blog = () => {
             x
           </button>
         )}
-       
+
         <button
           className="absolute -right-20 btn bg-red-500 text-white px-4 border-2 text-xl h-[52px] border-red-500 rounded-none rounded-r-md"
           onClick={handleSearch}
@@ -61,15 +62,19 @@ const Blog = () => {
           Search
         </button>
       </div>
+      <div className="flex justify-end lg:mr-[200px]">
+        <Link to="/dashboard/content-management/add-blog">
+          <button className="bg-red-500 py-2 px-4 rounded-lg text-white font-bold">+ Add Blog Post</button>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:mx-[200px]">
         {displayPosts.map((post) => (
-          <div key={post.id} className="mx-auto card w-[250px] bg-[transparent] w-full drop-shadow-x rounded-mdl shadow-xl p-4">
+          <div
+            key={post.id}
+            className="mx-auto card w-[250px] bg-[transparent] w-full drop-shadow-x rounded-mdl shadow-xl p-4"
+          >
             <div className="relative">
-              <img
-                src={post.image}
-                className="rounded-md w-full"
-                alt="Shoes"
-              />
+              <img src={post.image} className="rounded-md w-full" alt="Shoes" />
               <div className="absolute rounded-full w-[60px] h-[60px] bg-red-500 drop-shadow-xl bottom-[-30px] right-[10px] text-white font-bold uppercase text-center">
                 <p className="text-xl">{post.date.day}</p>
                 <p className="text-sm">{post.date.month}</p>
@@ -78,12 +83,11 @@ const Blog = () => {
 
             <div className="flex flex-col w-full">
               <p className="pt-3 w-full text-sm text-gray-800">
-                Status <span className="text-red-500 font-bold">{post.status}</span>
+                Status{" "}
+                <span className="text-red-500 font-bold">{post.status}</span>
               </p>
               <h2 className="card-title text-red-500">{post.title}</h2>
-              <p className="pb-2 w-full text-gray-600">
-                {post.content}
-              </p>
+              <p className="pb-2 w-full text-gray-600">{post.content}</p>
               <div className="card-actions justify-start">
                 <button className="btn bg-black bg-opacity-20 text-red-500 border-2 border-red-500">{`Read more->`}</button>
               </div>
@@ -97,7 +101,7 @@ const Blog = () => {
             className="btn bg-red-500 text-white px-4 py-2"
             onClick={() => setShowAll(!showAll)}
           >
-            {showAll ? 'See less' : 'See more'}
+            {showAll ? "See less" : "See more"}
           </button>
         </div>
       )}
@@ -105,4 +109,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default ContentManagement;

@@ -22,6 +22,9 @@ import MyDonationRequestPage from "../../Pages/DashBoard/MyDonationRequestPage/M
 import EditProfile from "../../Components/UserInfo/EditProfile";
 import AdminHome from "../../Pages/DashBoard/Home/AdminHome";
 import AllUsers from "../../Pages/DashBoard/AllUsers/AllUsers";
+import AllBloodDonationRequests from "../../Pages/DashBoard/AllBloodDonationRequests/AllBloodDonationRequests";
+import ContentManagement from "../../Pages/DashBoard/ContentManagement/ContentManagement";
+import AddBlog from "../../Pages/DashBoard/ContentManagement/AddBlog.jsx/AddBlog";
 
 export const router = createBrowserRouter([
     {
@@ -93,8 +96,20 @@ export const router = createBrowserRouter([
                 element: <AdminHome/>
             },
             {
-                path:"allUsers",
+                path:"all-users",
                 element: <AllUsers/>
+            },
+            {
+                path:"content-management",
+                element: <ContentManagement/>
+            },
+            {
+                path:"content-management/add-blog",
+                element: <AddBlog/>
+            },
+            {
+                path:"all-blood-donation-request",
+                element: <AllBloodDonationRequests/>
             },
             {
                 path:"create-donation-request",
