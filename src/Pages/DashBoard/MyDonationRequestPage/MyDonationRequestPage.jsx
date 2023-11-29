@@ -185,7 +185,7 @@ const MyDonationRequestPage = () => {
             </thead>
             <tbody className="text-sm font-semibold bg-red-500 bg-opacity-20 border-2 border-red-500">
               {/* rows */}
-              {requests.length > 0 ? (
+              {requests ? (
                 requests.map((request) => (
                   <tr key={request._id} className="border-b-2 border-red-500">
                   

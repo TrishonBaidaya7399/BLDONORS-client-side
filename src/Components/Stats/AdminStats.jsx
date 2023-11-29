@@ -48,7 +48,7 @@ const AdminStats = () => {
                 </div>
                 <div className="description text-gray-600 text-start flex flex-col gap-1">
                         <h1 className="text-2xl text-white font-bold">Blood Donations</h1>
-                        <h1 className="text-3xl text-center text-white font-extrabold">{allUsers?.length}</h1>
+                        <h1 className="text-3xl text-center text-white font-extrabold">{totalBloodDonation?.length}</h1>
                         <h1 className="text-xl text-white text-center font-semibold">Jan 1st - Feb 1st</h1>
                 </div>
                 </div>

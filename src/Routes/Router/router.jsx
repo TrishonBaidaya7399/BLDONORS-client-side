@@ -25,6 +25,7 @@ import AllUsers from "../../Pages/DashBoard/AllUsers/AllUsers";
 import AllBloodDonationRequests from "../../Pages/DashBoard/AllBloodDonationRequests/AllBloodDonationRequests";
 import ContentManagement from "../../Pages/DashBoard/ContentManagement/ContentManagement";
 import AddBlog from "../../Pages/DashBoard/ContentManagement/AddBlog.jsx/AddBlog";
+import PrivateRoute from "../../Providers/PrivateRoute";
 
 export const router = createBrowserRouter([
     {
@@ -49,11 +50,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/donationRequests",
-                element: <DonationRequest/>
+                element: <PrivateRoute><DonationRequest/></PrivateRoute>
             },
             {
                 path: "/bloodDonationDetails/:id",
-                element: <BloodDonationDetails/>,
+                element: <PrivateRoute><BloodDonationDetails/></PrivateRoute>,
                 loader: ({params})=> fetch(`http://localhost:5000/donationRequest/${params.id}`),
             },
            
@@ -61,7 +62,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "dashboard",
-        element: <DashBoard/>,
+        element: <PrivateRoute><DashBoard/></PrivateRoute>,
         children: [
             {
                 path:"adminProfile",

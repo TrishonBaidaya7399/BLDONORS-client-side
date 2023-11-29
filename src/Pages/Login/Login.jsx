@@ -97,7 +97,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>{`BISTRO BOSS | Log In`}</title>
+        <title>{`BLDONORS | Log In`}</title>
       </Helmet>
       <div
         className="hero min-h-screen p-[80px] "

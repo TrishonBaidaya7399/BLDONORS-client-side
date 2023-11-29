@@ -64,7 +64,7 @@ const ContentManagement = () => {
       </div>
       <div className="flex justify-end lg:mr-[200px]">
         <Link to="/dashboard/content-management/add-blog">
-          <button className="bg-red-500 py-2 px-4 rounded-lg text-white font-bold">+ Add Blog Post</button>
+          <button className="border-2 border-red-500 py-1 px-2 rounded-lg text-red-500 font-bold">+ Add Blog Post</button>
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:mx-[200px]">
