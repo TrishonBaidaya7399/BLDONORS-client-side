@@ -59,7 +59,7 @@ const ContentManagement = () => {
 
   useEffect(() => {
     // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch("http://localhost:5000/blogs")
+    fetch("https://bldonors-server.vercel.app/blogs")
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error("Error fetching data:", error));

@@ -9,7 +9,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch('http://localhost:5000/donationRequest')
+    fetch('https://bldonors-server.vercel.app/donationRequest')
       .then((response) => response.json())
       .then((data) => {
         setPosts(data);

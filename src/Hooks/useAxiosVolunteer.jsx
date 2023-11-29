@@ -5,7 +5,7 @@ import { AuthContext } from "../Providers/AuthProvider";
 
 // import PropTypes from 'prop-types';
 const axiosValunteer = axios.create({
-  baseURL: `http://localhost:5000`,
+  baseURL: `https://bldonors-server.vercel.app`,
 });
 const useAxiosVolunteer = () => {
   const navigate = useNavigate();
