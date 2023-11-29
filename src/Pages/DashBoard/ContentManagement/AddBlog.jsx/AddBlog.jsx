@@ -56,20 +56,20 @@ const AddBlog = () => {
         status: "draft",
       };
       console.log(blogData);
-      // Post user data
-    //   const userRes = await axiosPublic.post("/blogs", blogData);
+      // Post blog data
+      const blogRes = await axiosPublic.post("/blogs", blogData);
 
-    //   if (userRes.data.insertedId) {
-    //     Swal.fire({
-    //       icon: "success",
-    //       title: "Blog Created!",
-    //       text: "New Blog is posted successfully!",
-    //       confirmButtonText: "Ok!",
-    //     });
+      if (blogRes.data.insertedId) {
+        Swal.fire({
+          icon: "success",
+          title: "Blog Created!",
+          text: "New Blog is posted successfully!",
+          confirmButtonText: "Ok!",
+        });
 
-    //     // Reset form
-    //     reset();
-    //   }
+        // Reset form
+        reset();
+      }
     } catch (error) {
       // Handle errors
       console.error("Error submitting data:", error);

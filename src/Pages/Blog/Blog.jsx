@@ -8,9 +8,12 @@ const Blog = () => {
 
   useEffect(() => {
     // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch('/blog.json')
+    fetch('http://localhost:5000/blogs')
       .then((response) => response.json())
-      .then((data) => setPosts(data))
+      .then((data) => {
+        const publishedPosts = data.filter((post) => post.status === 'published')      
+        setPosts(publishedPosts)
+      })
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
@@ -47,7 +50,7 @@ const Blog = () => {
         />
          {searchText && (
           <button
-            className="absolute right-0 btn text-red-500 bg-[transparent] hover: bg-[transparent] shadow-none border-none text-3xl"
+            className="absolute right-0 btn text-gray-400 bg-[transparent] hover: bg-[transparent] shadow-none border-none text-3xl pr-8"
             onClick={handleResetSearch}
           >
             x
@@ -66,26 +69,20 @@ const Blog = () => {
           <div key={post.id} className="mx-auto card w-[250px] bg-[transparent] w-full drop-shadow-x rounded-mdl shadow-xl p-4">
             <div className="relative">
               <img
-                src={post.image}
+                src={post?.photo}
                 className="rounded-md w-full"
                 alt="Shoes"
               />
-              <div className="absolute rounded-full w-[60px] h-[60px] bg-red-500 drop-shadow-xl bottom-[-30px] right-[10px] text-white font-bold uppercase text-center">
-                <p className="text-xl">{post.date.day}</p>
-                <p className="text-sm">{post.date.month}</p>
-              </div>
             </div>
 
             <div className="flex flex-col w-full">
               <p className="pt-3 w-full text-sm text-gray-800">
-                Status <span className="text-red-500 font-bold">{post.status}</span>
+                <span className="text-gray-500 font-bold">{post.status}</span>
               </p>
-              <h2 className="card-title text-red-500">{post.title}</h2>
-              <p className="pb-2 w-full text-gray-600">
-                {post.content}
-              </p>
+              <h2 className="card-title text-red-500 mt-2">{post.title}</h2>
+              <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]" dangerouslySetInnerHTML={{ __html: post.content }} />
               <div className="card-actions justify-start">
-                <button className="btn bg-black bg-opacity-20 text-red-500 border-2 border-red-500">{`Read more->`}</button>
+                <button className="text-red-500 mt-2">{`Read more->`}</button>
               </div>
             </div>
           </div>
