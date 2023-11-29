@@ -32,3 +32,43 @@
 .pagination button:focus {
   background-color: #ddd;
 }
+/* Pagination style */
+/* Custom styles for pagination buttons */
+.pagination-container {
+  margin-top: 20px; /* Adjust the margin based on your layout */
+}
+
+.page-item {
+  display: flex;
+  padding: 10px;
+  margin-right: 5px; /* Adjust the spacing between pagination items */
+}
+
+.page-link {
+  display: block;
+  padding: 8px 16px;
+  color: #fff;
+  background-color: red; /* Set the background color for normal state */
+  border: 1px solid black;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+
+  /* Hover styles */
+  &:hover {
+    background-color: #0056b3; /* Set the background color for hover state */
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* Active styles */
+  &.active {
+    background-color: green; /* Set the background color for active state */
+    border: 1px solid black;
+  }
+}
+
+button:disabled {
+  background-color: #b9b3b3;
+  color: #3c3a3a; 
+  cursor: not-allowed; 
+}

@@ -35,16 +35,6 @@ const AllBloodDonationRequests = () => {
     axiosPublic
       .get("/donationRequest")
       .then((result) => {
-        // // Assuming userInfo is an array with user information
-        // const userInfoEmail = userInfo[0]?.email || ""; // Replace with the actual key for the user email
-
-        // // Filter the data based on the status and requesterEmail condition
-        // const filteredRequests = result.data.filter(
-        //   (request) => request.requesterEmail === userInfoEmail
-        // );
-
-        // // Show only the most recent 3 requests by default
-        // const recentRequests = filteredRequests.slice(0, 3);
         setRequests(result.data);
         setLoading(false); // Set loading to false when data is fetched
       })

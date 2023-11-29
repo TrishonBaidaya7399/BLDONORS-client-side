@@ -4,51 +4,58 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useUserInfo from "../../../Hooks/useUserInfo";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Pagination from "react-js-pagination";
+
 
 const MyDonationRequestPage = () => {
   const userInfo = useUserInfo();
   const [requests, setRequests] = useState([]);
+  console.log(requests)
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
   const [showAllRequests, setShowAllRequests] = useState(false);
   const axiosSecure = useAxiosSecure();
-
+  const [filterStatus, setFilterStatus] = useState("all");
+  // Pagination stats
+  const [activePage, setActivePage] = useState(1);
+const itemsPerPage = 5;
+const startIndex = (activePage - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
   useEffect(() => {
     // Fetch districts and upazilas here
     fetch("/districts.json")
       .then((response) => response.json())
       .then((data) => setDistricts(data))
       .catch((error) => console.error("Error fetching districts:", error));
+  }, []);
 
+  useEffect(() => {
     fetch("/upazilas.json")
       .then((response) => response.json())
       .then((data) => setUpazilas(data))
       .catch((error) => console.error("Error fetching upazilas:", error));
+  }, []);
 
-    // Fetch donation requests
+  useEffect(() => {
     axiosPublic
       .get("/donationRequest")
       .then((result) => {
-        // Assuming userInfo is an array with user information
-        const userInfoEmail = userInfo[0]?.email || ""; // Replace with the actual key for the user email
-
-        // Filter the data based on the status and requesterEmail condition
+        const userInfoEmail = userInfo[0]?.email || "";
         const filteredRequests = result.data.filter(
           (request) => request.requesterEmail === userInfoEmail
         );
-
-        // Show only the most recent 3 requests by default
-        const recentRequests = filteredRequests.slice(0, 10);
+        const recentRequests = filteredRequests;
+        console.log(recentRequests);
         setRequests(recentRequests);
-        setLoading(false); // Set loading to false when data is fetched
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching donation request:", error);
         setLoading(false); // Set loading to false in case of an error
       });
-  }, [axiosPublic, setRequests, userInfo]);
+  }, [activePage]);
 
   // Function to get district name by ID
   const getDistrictNameById = (districtId) => {
@@ -62,38 +69,39 @@ const MyDonationRequestPage = () => {
     return upazila ? upazila.name : "Loading...";
   };
 
-//   console.log("UserInfo Status: ", userInfo[0]?.status);
-   // Function to handle updating donation status
-   const handleUpdateStatus = async(requestId, newStatus) => {
+  //   console.log("UserInfo Status: ", userInfo[0]?.status);
+  // Function to handle updating donation status
+  const handleUpdateStatus = async (requestId, newStatus) => {
     const donorData = {
       donorName: newStatus === "done" ? userInfo[0]?.name : "",
       donorEmail: newStatus === "done" ? userInfo[0]?.email : "",
       status: newStatus,
-    }
-    console.log("Update requested: ",donorData);
+    };
+    console.log("Update requested: ", donorData);
     try {
       // request to update the donation request
-      const result = await axiosSecure.patch(`/donationRequest/${requestId}`, donorData);
-  
+      const result = await axiosSecure.patch(
+        `/donationRequest/${requestId}`,
+        donorData
+      );
+
       console.log(result);
-  
+
       if (result.data.modifiedCount > 0) {
         {
-          newStatus==="done"
-          ?
-         ( Swal.fire({
-            title: "Done!",
-            icon: "success",
-            text: "Thanks to donate blood",
-            confirmButtonText: "Ok!",
-          }))
-          :
-         ( Swal.fire({
-            title: "Canceled!",
-            icon: "success",
-            text: "Blood donation status set to Canceled!",
-            confirmButtonText: "Ok!",
-          }))
+          newStatus === "done"
+            ? Swal.fire({
+                title: "Done!",
+                icon: "success",
+                text: "Thanks to donate blood",
+                confirmButtonText: "Ok!",
+              })
+            : Swal.fire({
+                title: "Canceled!",
+                icon: "success",
+                text: "Blood donation status set to Canceled!",
+                confirmButtonText: "Ok!",
+              });
         }
       } else {
         Swal.fire({
@@ -116,7 +124,7 @@ const MyDonationRequestPage = () => {
     console.log(`Updating status of donation ${requestId} to ${newStatus}`);
   };
 
-  const handleDelete = (id)=>{
+  const handleDelete = (id) => {
     console.log("Requested to delete: ", id);
     Swal.fire({
       title: "Are you sure?????",
@@ -125,28 +133,57 @@ const MyDonationRequestPage = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure.delete(`/donationRequest/${id}`)
-        .then((res) =>{
-          console.log("Deleted Count: ",res);
-          if(res.data.deletedCount > 0){
+        axiosSecure.delete(`/donationRequest/${id}`).then((res) => {
+          console.log("Deleted Count: ", res);
+          if (res.data.deletedCount > 0) {
             Swal.fire({
               title: "Deleted!",
               text: "Your file has been deleted.",
-              icon: "success"
+              icon: "success",
             });
           }
-        })
+        });
       }
     });
-  }
+  };
+  // Function to filter requests based on status
+  const filteredRequests = requests.filter((request) => {
+    if (filterStatus === "all") {
+      return true; // Show all requests
+    }
+    return request.status === filterStatus;
+  });
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
 
-  return (
-    <div>
+// console.log("Filtered Data: ", filteredRequests);
+
+
+return (
+    <div className="mx-auto mb-12">
       <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         {`${userInfo[0]?.name}'s Donation Requests`}
+      </div>
+      <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-[95vw] mt-6">
+        <label htmlFor="statusFilter" className="text-white font-semibold">
+          Filter by Status:
+        </label>
+        <select
+          className="rounded-lg"
+          id="statusFilter"
+          onChange={handleFilterChange}
+          value={filterStatus}
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="inprogress">In Progress</option>
+          <option value="done">Done</option>
+          <option value="canceled">Canceled</option>
+        </select>
       </div>
       <div className="flex justify-end mx-4 mb-2">
         <button
@@ -156,7 +193,7 @@ const MyDonationRequestPage = () => {
           {showAllRequests ? "Show Recent 3 Requests" : "Show All Requests"}
         </button>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] m-12  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] mx-12 -mt-6  rounded-md border-[5px] border-red-500">
         {loading ? (
           <p className="text-center text-2xl py-6">
             <span className="loading loading-spinner loading-lg"></span>
@@ -186,9 +223,8 @@ const MyDonationRequestPage = () => {
             <tbody className="text-sm font-semibold bg-red-500 bg-opacity-20 border-2 border-red-500">
               {/* rows */}
               {requests ? (
-                requests.map((request) => (
+                filteredRequests.slice(startIndex, endIndex).map((request) => (
                   <tr key={request._id} className="border-b-2 border-red-500">
-                  
                     <td className="border-r-2 border-red-500">
                       {request ? request.recipientName : "Loading..."}
                     </td>
@@ -196,7 +232,8 @@ const MyDonationRequestPage = () => {
                       {request ? request.bloodGroup : "Loading..."}
                     </td>
                     <td className="border-r-2 border-red-500">
-                      {request ? request.date : "Loading..."} at  {request ? request.time : "Loading..."}
+                      {request ? request.date : "Loading..."} at{" "}
+                      {request ? request.time : "Loading..."}
                     </td>
                     <td className="border-r-2 border-red-500">
                       {request ? request.hospitalName : "Loading..."}
@@ -228,7 +265,9 @@ const MyDonationRequestPage = () => {
                         ? getUpazilaNameById(request.upazila)
                         : "Loading..."}
                     </td>
-                    <td className="border-r-2 border-red-500">{request ? request.donationStatus : "Loading..."}</td>
+                    <td className="border-r-2 border-red-500">
+                      {request ? request.donationStatus : "Loading..."}
+                    </td>
                     <td className="border-r-2 border-red-500">
                       <NavLink
                         to={`/dashboard/RequestedDonationDetails/${request?._id}`}
@@ -259,8 +298,8 @@ const MyDonationRequestPage = () => {
                       </NavLink>
                     </td>
                     <td className="border-r-2 border-red-500">
-                      <button 
-                      onClick={()=>handleDelete(request._id)}
+                      <button
+                        onClick={() => handleDelete(request._id)}
                         className="py-2 px-4 bg-red-500 text-white rounded-md"
                         id={request._id}
                       >
@@ -286,7 +325,9 @@ const MyDonationRequestPage = () => {
                             ? "bg-red-500 text-white"
                             : "button-disabled"
                         } rounded-md`}
-                        onClick={() => handleUpdateStatus(request._id, "canceled")}
+                        onClick={() =>
+                          handleUpdateStatus(request._id, "canceled")
+                        }
                       >
                         Cancel
                       </button>
@@ -304,6 +345,19 @@ const MyDonationRequestPage = () => {
           </table>
         )}
       </div>
+          {/* Pagination */}
+  <div className="pagination-container mx-auto w-fit mt-6 font-bold text-xl">
+    <Pagination
+      activePage={activePage}
+      itemsCountPerPage={itemsPerPage}
+      totalItemsCount={filteredRequests.length}
+      pageRangeDisplayed={5}
+      onChange={(pageNumber) => setActivePage(pageNumber)}
+      itemClass="page-item"
+      linkClass="page-link"
+      
+    />
+  </div>
     </div>
   );
 };

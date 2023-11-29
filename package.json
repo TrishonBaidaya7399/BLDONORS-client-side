@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.18",
+    "@mui/material": "^5.14.18",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.6",
     "@tanstack/react-query": "^5.8.7",
     "aos": "^2.3.4",
     "axios": "^1.6.2",
@@ -23,6 +28,7 @@
     "react-helmet-async": "^2.0.1",
     "react-hook-form": "^7.48.2",
     "react-icons": "^4.12.0",
+    "react-js-pagination": "^3.0.3",
     "react-loader-spinner": "^5.4.5",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.20.0",
@@ -30,6 +36,7 @@
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1",
     "sort-by": "^1.2.0",
+    "styled-components": "^6.1.1",
     "sweetalert2": "^11.10.1"
   },
   "devDependencies": {

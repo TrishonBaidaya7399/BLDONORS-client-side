@@ -16,7 +16,7 @@ const DashBoard = () => {
   refetch();
   return (
     <div>
-      <div className="drawer">
+      <div className="drawer z-20">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
           {/* Page content here */}
@@ -36,7 +36,7 @@ const DashBoard = () => {
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-red-500 bg-opacity-90 drop-shadow-lg text-white pt-8">
+          <ul className="z-20 menu p-4 w-80 min-h-full bg-red-500 bg-opacity-90 drop-shadow-lg text-white pt-8">
             {/* Sidebar content here */}
             <div className="flex flex-row gap-2 items-center drop-shadow-lg mb-4">
               <div className="rounded-full bg-black border-2 border-white p-1">
@@ -94,7 +94,7 @@ const DashBoard = () => {
                   <div>
                     <BiSolidDonateBlood className="text-3xl text-white -mr-6" />
                   </div>{" "}
-                  <p>My Donation Requests</p>
+                  <p>All Blood Donation Requests</p>
                 </li>
               </Link>
               <Link
@@ -146,6 +146,28 @@ const DashBoard = () => {
                     <BiSolidDonateBlood className="text-3xl text-white -mr-6" />
                   </div>{" "}
                   <p>Create New Donation</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/volunteer-all-blood-donation-request"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <BiSolidDonateBlood className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>All Blood Donation Requests</p>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/content-management"
+                className="text-white text-md font-bold"
+              >
+                <li className="flex flex-row  items-center">
+                  <div>
+                    <MdOutlineContentPaste className="text-3xl text-white -mr-6" />
+                  </div>{" "}
+                  <p>Content Management</p>
                 </li>
               </Link>
               </>

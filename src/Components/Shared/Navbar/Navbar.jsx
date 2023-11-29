@@ -1,5 +1,5 @@
 // import PropTypes from 'prop-types';
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../../../images/logo/logo.png";
 import { FaSearch } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
@@ -109,7 +109,9 @@ const Navbar = () => {
       <div className="navbar-end">
         {user ? (
           <>
+            <Link to="/search">
             <FaSearch className="text-2xl text-red-500 mr-4" />
+            </Link>
             <div
               className="avatar btn bg-[transparent] border-none shadow-none hover:bg-[transparent] border-none shadow-none"
               onClick={() => document.getElementById("my_modal_5").showModal()}
