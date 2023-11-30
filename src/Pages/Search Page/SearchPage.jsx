@@ -65,7 +65,7 @@ const SearchPage = () => {
               <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]"><span className='text-md font-bold text-gray-600'>Date: </span>{post.date} - at - {post.time}</p>
               <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]"><span className='text-md font-bold text-gray-600'>Blood Group: </span><span className='text-red-500 text-xl font-bold'>{post.bloodGroup}</span></p>
               <div className="card-actions justify-start">
-                <Link to={`http://localhost:5173/bloodDonationDetails/${post._id}`}>
+                <Link to={`https://bldonors.web.app/bloodDonationDetails/${post._id}`}>
                 <button className="text-red-500 mt-2">{`Read more->`}</button>
                 </Link>
               </div>

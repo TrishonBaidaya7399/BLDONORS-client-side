@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useUserInfo from "../../../Hooks/useUserInfo";
+// import useUserInfo from "../../../Hooks/useUserInfo";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import Pagination from "react-js-pagination";
@@ -8,7 +8,7 @@ import { MdAdminPanelSettings } from "react-icons/md";
 
 
 const AllUsers = () => {
-  const userInfo = useUserInfo();
+  // const userInfo = useUserInfo();
   const [users, setUsers] = useState([]);
   console.log(users)
   const [loading, setLoading] = useState(true);
@@ -33,7 +33,7 @@ const endIndex = startIndex + itemsPerPage;
         console.error("Error fetching donation request:", error);
         setLoading(false); // Set loading to false in case of an error
       });
-  }, [activePage]);
+  }, [activePage, axiosSecure]);
 
 
   //   console.log("UserInfo Status: ", userInfo[0]?.status);
@@ -207,7 +207,7 @@ const endIndex = startIndex + itemsPerPage;
 return (
     <div className="mx-auto mb-12">
       <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
-        {`${userInfo[0]?.name}'s Donation Requests`}
+        All Registered Users
       </div>
       <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-[95vw] mt-6">
         <label htmlFor="statusFilter" className="text-white font-semibold">

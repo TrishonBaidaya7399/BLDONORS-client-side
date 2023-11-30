@@ -1,5 +1,6 @@
 // import PropTypes from 'prop-types';
 import { Link, NavLink } from "react-router-dom";
+import { RxCross2 } from "react-icons/rx";
 import logo from "../../../images/logo/logo.png";
 import { FaSearch } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
@@ -11,6 +12,7 @@ import useUserInfo from "../../../Hooks/useUserInfo";
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
+  const [open, setOpen] = useState(false);
   const [userInfo] = useUserInfo();
   const [loading, setLoading] = useState(false);
   const navItems = (
@@ -85,23 +87,30 @@ const Navbar = () => {
       });
   };
   return (
-    <div className="navbar lg:px-[100px] drop-shadow-lg shadow-lg">
+    <div className="navbar lg:px-[100px] drop-shadow-lg shadow-lg bg-white">
       <div className="navbar-start">
-        <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost lg:hidden">
-            <GiHamburgerMenu className="text-2xl text-red-500" />
+      <label className="swap swap-rotate lg:hidden">
+            <input type="checkbox" />
+            <GiHamburgerMenu
+              onClick={() => setOpen(!open)}
+              className="swap-off text-[25px] md:text-4xl text-red-500 bg-[transparent] "
+            />
+            <RxCross2
+              onClick={() => setOpen(!open)}
+              className="swap-on text-[25px] md:text-4xl text-red-500 bg-[transparent] "
+            />
           </label>
+
           <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className={`text-white ${
+              open ? "block" : "hidden"
+            } menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow text-gray-200 border-2 border-gray-200 bg-opacity-70 drop-shadow-xl bg-black `}
           >
             {navItems}
           </ul>
-        </div>
-        <div className="flex gap-1 items-center">
-          <img className="w-[30px]" src={logo} alt="" />
-          <p className="text-red-500 font-semibold text-xl">BLdonors</p>
-        </div>
+          <div>
+            <img src={logo} className="w-8 ml-2" alt="" />
+          </div>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navItems}</ul>
@@ -141,7 +150,7 @@ const Navbar = () => {
         id="my_modal_5"
         className="modal modal-bottom sm:modal-middle text-white"
       >
-        <div className="modal-box bg-black bg-opacity-80 border-2 border-red-500 w-[332px] h-[500px] mx-auto">
+        <div className="overflow-x-hidden modal-box bg-black bg-opacity-80 border-2 border-red-500 w-[332px] h-[500px] mx-auto">
           <div className="rounded-full w-[150px] h-[150px] bg-[white] mx-auto">
             <img
               className="rounded-full border-2 border-red-500 h-full w-full"
@@ -158,7 +167,23 @@ const Navbar = () => {
           <h1 className="text-lg text-white text-center pt-4">
             Role: {userInfo?.role}
           </h1>
-          <div className="modal-action flex justify-center">
+          <NavLink
+              className="flex justify-center"
+              to={
+                userInfo?.role === "Volunteer"
+                  ? "/dashboard/volunteerHome"
+                  : userInfo?.role === "Admin"
+                  ? "/dashboard/adminHome"
+                  : userInfo?.role === "Donor"
+                  ? "/dashboard/donorHome"
+                  : "/dashboard" // Default to "/dashboard" if the role is not recognized
+              }
+            >
+              <button className=" py-1 px-2 rounded-lg mt-2 text-md text-white font-bold bg-red-500">
+              DASHBOARD
+            </button>
+            </NavLink>
+          <div className="modal-action flex mx-auto justify-center">
             
             <form method="dialog" className="flex gap-6">
               {/* if there is a button in form, it will close the modal */}
@@ -172,22 +197,6 @@ const Navbar = () => {
                 "Log Out"
               )}
             </button>
-            <NavLink
-              className="btn bg-white text-xl text-red-500 font-bold bg-opacity-60 border-red-500"
-              to={
-                userInfo?.role === "Volunteer"
-                  ? "/dashboard/volunteerHome"
-                  : userInfo?.role === "Admin"
-                  ? "/dashboard/adminHome"
-                  : userInfo?.role === "Donor"
-                  ? "/dashboard/donorHome"
-                  : "/dashboard" // Default to "/dashboard" if the role is not recognized
-              }
-            >
-              <button>
-              DASHBOARD
-            </button>
-            </NavLink>
               <button
               className="btn bg-white text-xl text-red-500 font-bold bg-opacity-60 border-red-500"
             >

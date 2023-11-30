@@ -40,13 +40,13 @@ const Blog = () => {
       <h1 className="text-3xl font-bold border-b-2 border-red-500 mb-6 w-fit text-center mx-auto">
         Blogs
       </h1>
-      <div className="mb-4 mx-auto w-[500px] flex items-center relative">
+      <div className="mb-4 mx-auto w-[250px] lg:w-[500px] flex items-center relative">
         <input
           type="text"
           placeholder="Search by title..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          className=" p-3 rounded-l-md w-full border-2 border-red-500"
+          className=" p-3 rounded-l-md w-full -ml-12 border-2 border-red-500"
         />
          {searchText && (
           <button
@@ -58,7 +58,7 @@ const Blog = () => {
         )}
        
         <button
-          className="absolute -right-20 btn bg-red-500 text-white px-4 border-2 text-xl h-[52px] border-red-500 rounded-none rounded-r-md"
+          className="absolute -right-10 lg:-right-30 btn bg-red-500 text-white px-4 border-2 text-xl h-[52px] border-red-500 rounded-none rounded-r-md"
           onClick={handleSearch}
         >
           Search

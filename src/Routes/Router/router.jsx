@@ -28,11 +28,13 @@ import AddBlog from "../../Pages/DashBoard/ContentManagement/AddBlog.jsx/AddBlog
 import PrivateRoute from "../../Providers/PrivateRoute";
 import SearchPage from "../../Pages/Search Page/SearchPage";
 import VolunteerAllBloodDonation from "../../Pages/DashBoard/VolunteerAllBloodDonation/VolunteerAllBloodDonation";
+import ErrorPage from "../../Error page/error";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <Main/>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path: "/",
@@ -69,6 +71,7 @@ export const router = createBrowserRouter([
     {
         path: "dashboard",
         element: <PrivateRoute><DashBoard/></PrivateRoute>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path:"adminProfile",

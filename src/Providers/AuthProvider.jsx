@@ -56,8 +56,8 @@ const AuthProvider = ({ children }) => {
         //get token and store in client side
         const userInfo = { email: currentUser.email };
         axiosPublic.post("/jwt", userInfo).then((res) => {
-          if (res.data.token) {
-            localStorage.setItem("accessToken", res.data.token);
+          if (res.data) {
+            localStorage.setItem("accessToken", res.data?.token);
             setLoading(false)
           }
         });

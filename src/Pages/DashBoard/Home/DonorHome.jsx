@@ -10,7 +10,7 @@ const DonorHome = () => {
     return (
         <div className="">
             <div>
-            <h1 className="text-5xl font-bold text-center">Welcome to Dashboard {userInfo?.name}</h1>
+            <h1 className=" text-3xl lg:text-5xl font-bold text-center">Welcome to Dashboard {userInfo?.name}</h1>
             </div>
             <div>
                 <RequestedDonations/>

@@ -1,19 +1,34 @@
 import PropTypes from "prop-types";
-import { useLoaderData } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import useUserInfo from "../../Hooks/useUserInfo";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const BloodDonationDetails = () => {
+  const [donationDetails, setDonationDetails]=useState({})
+  const {id} = useParams();
+  const requestedId = id;
+  console.log("Id from useparams: ",requestedId) 
   const axiosSecure = useAxiosSecure();
   const userInfo = useUserInfo();
-  const [user, setUser] = useState(userInfo);
-  useEffect(() => {
-    setUser(userInfo);
-  }, [userInfo]);
+  console.log("User Inside BloodDonationDetails: ", userInfo[0])
 
-  const donationDetails = useLoaderData();
+  useEffect(() => {
+    axiosSecure
+      .get(`https://bldonors-server.vercel.app/donationRequest/${requestedId}`)
+      .then((result) => {
+        console.log(result.data);
+        setDonationDetails(result.data);
+
+      })
+      .catch((error) => {
+        console.error("Error fetching donation request:", error);
+      });
+  }, [axiosSecure, requestedId]);
+
+
+  // const donationDetails = useLoaderData();
   const {
     recipientName,
     date,
@@ -186,7 +201,7 @@ const BloodDonationDetails = () => {
                 <input
                   type="text"
                   id="donorName"
-                  value={user[0]?.name}
+                  value={userInfo[0]?.name}
                   readOnly
                   className="border p-2 border-green-600 rounded"
                 />
@@ -198,7 +213,7 @@ const BloodDonationDetails = () => {
                 <input
                   type="text"
                   id="donorEmail"
-                  value={user[0]?.email}
+                  value={userInfo[0]?.email}
                   readOnly
                   className="border p-2 border-green-600 rounded"
                 />

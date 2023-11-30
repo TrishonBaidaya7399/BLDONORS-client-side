@@ -34,12 +34,12 @@ const UserInfo = () => {
   return (
     <div>
       <div className="flex justify-center">
-        <h1 className="text-3xl font-bold px-4 border-b-2 border-red-500 w-fit">
+        <h1 className="text-3xl font-bold md:px-4 border-b-2 border-red-500 w-fit">
           {userInfo?.role} Profile
         </h1>
       </div>
-      <div className="rounded-lg border-2 border-red-500 p-12 my-12 mx-[200px] flex flex-col-reverse lg:flex-row-reverse justify-center gap-12 bg-red-500 bg-opacity-20">
-        <div className="infoPart flex-flex col gap-4">
+      <div className="rounded-lg border-2 border-red-500 md:p-12 my-12 md:mx-[100px] lg:mx-[200px] flex flex-col-reverse lg:flex-row-reverse justify-center gap-12 bg-red-500 bg-opacity-20">
+        <div className="infoPart flex-flex col gap-4 px-2">
           <h1 className="text-2xl">
             <span className="text-red-500 text-2xl font-bold mr-2">Name:</span>
             {userInfo?.name}
@@ -71,7 +71,7 @@ const UserInfo = () => {
             {upazilaName}
           </h1>
           <Link to="/dashboard/editProfile">
-          <button className="bg-red-500 px-8 py-2 rounded-lg text-white mt-4 font-bold">
+          <button className="bg-red-500 my-4 lg:my-0 px-8 py-2 rounded-lg text-white mt-4 font-bold">
           <div className="flex gap-2 items-center">
             <div>
               <p>Edit Profile Info </p>
@@ -84,7 +84,7 @@ const UserInfo = () => {
             </Link>
         </div>
         <div
-          className="rounded-lg border-2 bg-white border-red-500 w-[300px] h-[300px]"
+          className="mx-auto lg:mx-0  mt-4 lg:mt-0  rounded-lg border-2 bg-white border-red-500 w-[300px] h-[300px]"
           style={{
             backgroundImage: `url(${userInfo?.photo})`,
             backgroundSize: "cover",

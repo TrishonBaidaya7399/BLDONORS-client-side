@@ -4,7 +4,7 @@ import UserInfo from "../../../Components/UserInfo/UserInfo";
 
 const AdminProfile = () => {
     return (
-        <div>
+        <div className="overflow-x-hidden">
             <UserInfo/>
         </div>
     );

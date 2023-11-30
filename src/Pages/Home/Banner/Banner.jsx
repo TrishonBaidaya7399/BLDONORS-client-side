@@ -22,7 +22,7 @@ const Banner = () => {
       <Slider {...settings}>
         <div>
           <div
-            className="hero min-h-[60vh] md:min-h-[70vh]"
+            className="hero min-h-[70vh] md:min-h-[70vh]"
             style={{
               backgroundImage:
                 "url(https://i.ibb.co/DWwXCJr/banner-1.png)",

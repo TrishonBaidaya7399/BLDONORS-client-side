@@ -10,9 +10,9 @@ const AdminHome = () => {
     console.log(userInfo);
     refetch();
     return (
-        <div className="lg:mx-12">
+        <div className="mx-4 lg:mx-12">
             <div>
-            <h1 className="text-5xl font-bold text-center">Welcome to Dashboard {userInfo?.name}</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold text-center">Welcome to Dashboard {userInfo?.name}</h1>
             </div>
             <div>
                 <AdminStats/>

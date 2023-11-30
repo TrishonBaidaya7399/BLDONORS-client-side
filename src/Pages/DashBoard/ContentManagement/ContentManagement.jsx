@@ -208,7 +208,7 @@ const ContentManagement = () => {
   return (
     <div className="pb-12 mx-auto">
       <h1 className="text-3xl font-bold border-b-2 border-red-500 mb-6 w-fit text-center mx-auto">
-        Blogs
+        Content Management
       </h1>
 
      <div className="flex flex-col md:flex-row justify-center items-center lg:mx-[200px]">

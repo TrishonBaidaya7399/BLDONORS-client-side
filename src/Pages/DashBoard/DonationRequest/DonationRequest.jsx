@@ -11,16 +11,18 @@ const DonationRequest = () => {
   const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
 console.log("requested data: ", requests);
-// Fetch districts and upazilas here
-    fetch("/districts.json")
-    .then((response) => response.json())
-    .then((data) => setDistricts(data))
-    .catch((error) => console.error("Error fetching districts:", error));
+useEffect(()=>{
+  // Fetch districts and upazilas here
+  fetch("/districts.json")
+  .then((response) => response.json())
+  .then((data) => setDistricts(data))
+  .catch((error) => console.error("Error fetching districts:", error));
 
-    fetch("/upazilas.json")
-    .then((response) => response.json())
-    .then((data) => setUpazilas(data))
-    .catch((error) => console.error("Error fetching upazilas:", error));
+  fetch("/upazilas.json")
+  .then((response) => response.json())
+  .then((data) => setUpazilas(data))
+  .catch((error) => console.error("Error fetching upazilas:", error));
+},[])
     
     useEffect(() => {
     // Fetch donation requests
@@ -35,7 +37,7 @@ console.log("requested data: ", requests);
         console.error("Error fetching donation request:", error);
         setLoading(false)
       });
-  }, [axiosPublic, setRequests]);
+  }, [axiosPublic]);
 
   // Function to get district name by ID
   const getDistrictNameById = (districtId) => {
@@ -51,11 +53,11 @@ console.log("requested data: ", requests);
 console.log("UserInfo Status: ",userInfo[0].status);
 
   return (
-    <div>
-      <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
+    <div className="">
+      <div className="flex mx-4 lg:mx-auto pt-12 text-center text-2xl lg:text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         All Pending Donation Requests
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-h-[100vh] m-12  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-h-[100vh] m-4 lg:m-12  rounded-md border-[5px] border-red-500">
       {loading 
       ? (
           <p className="text-center text-2xl py-6"><span className="loading loading-spinner loading-lg"></span></p>
@@ -83,7 +85,7 @@ console.log("UserInfo Status: ",userInfo[0].status);
               requests.map((request) => (
                 <tr key={request._id} className="border-b-2 border-red-500">
                   <td className="border-r-2 border-red-500">
-                  <NavLink to={`http://localhost:5173/bloodDonationDetails/${request._id}`}><button disabled={userInfo[0]?.status !== "active"} className={`py-2 px-4 ${userInfo[0]?.status !== "active" ? 'button-disabled' : 'bg-red-500 text-white'} rounded-md`} id={request._id}>View</button></NavLink>
+                  <NavLink to={`https://bldonors.web.app/bloodDonationDetails/${request._id}`}><button disabled={userInfo[0]?.status !== "active"} className={`py-2 px-4 ${userInfo[0]?.status !== "active" ? 'button-disabled' : 'bg-red-500 text-white'} rounded-md`} id={request._id}>View</button></NavLink>
                   </td>
                   <td className="border-r-2 border-red-500">
                     {request ? request.recipientName : "Loading..."}

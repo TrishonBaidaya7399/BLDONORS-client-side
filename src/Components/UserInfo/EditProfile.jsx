@@ -96,9 +96,9 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="flex flex-col border-[3px] rounded-lg p-12 mb-12 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
+    <div className="flex flex-col border-[3px] rounded-lg p-2 md:p-12 mb-12 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
       <div className="flex justify-center">
-        <h1 className="text-3xl font-bold pb-2 border-b-[3px] border-red-500 px-4 w-fit">
+        <h1 className="text-3xl font-bold text-center pb-2 border-b-[3px] border-red-500 px-4 w-fit">
           Edit Your Donation Request
         </h1>
       </div>

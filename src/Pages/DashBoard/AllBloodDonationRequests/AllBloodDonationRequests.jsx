@@ -21,8 +21,6 @@ const AllBloodDonationRequests = () => {
       .then((response) => response.json())
       .then((data) => setDistricts(data))
       .catch((error) => console.error("Error fetching districts:", error));
-  }, []);
-  useEffect(() => {
     // Fetch upazila and upazilas here
     fetch("/upazilas.json")
       .then((response) => response.json())
@@ -36,11 +34,11 @@ const AllBloodDonationRequests = () => {
       .get("/donationRequest")
       .then((result) => {
         setRequests(result.data);
-        setLoading(false); // Set loading to false when data is fetched
+        setLoading(false); 
       })
       .catch((error) => {
         console.error("Error fetching donation request:", error);
-        setLoading(false); // Set loading to false in case of an error
+        setLoading(false); 
       });
   }, [axiosPublic, setRequests, userInfo]);
 
@@ -140,7 +138,7 @@ const AllBloodDonationRequests = () => {
   return (
     <div>
       <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
-        All Pending Donations Requested By {userInfo[0]?.name}
+        All Pending Donations Requests
       </div>
       <div className="flex justify-end mx-4 mt-4 mb-2">
         <button

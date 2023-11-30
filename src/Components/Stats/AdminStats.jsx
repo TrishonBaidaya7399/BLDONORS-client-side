@@ -29,7 +29,7 @@ const AdminStats = () => {
     console.log("All users inside stats: ", allUsers);
     console.log("Total Blood donations inside stats: ", totalBloodDonation);
     return (
-        <div>
+        <div className="">
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="cartItem w-full flex gap-12 w-fit bg-blue-500 p-8 rounded-xl">
                 <div className="p-4 rounded-lg bg-blue-200 text-5xl text-center text-blue-500 m-auto flex items-center h-fit">

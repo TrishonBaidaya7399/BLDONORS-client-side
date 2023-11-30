@@ -8,7 +8,7 @@ const VolunteerHome = () => {
     refetch();
     return (
         <div className="lg:mx-12">
-            <h1 className="text-5xl font-bold">Welcome to Dashboard {userInfo?.name}</h1>
+            <h1 className="text-3xl lg:text-5xl font-bold">Welcome to Dashboard {userInfo?.name}</h1>
         </div>
     );
 };
