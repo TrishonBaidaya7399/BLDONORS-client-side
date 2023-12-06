@@ -46,7 +46,10 @@
 
 .page-link {
   display: block;
-  padding: 8px 16px;
+  width: 40px;
+  height: 40px;
+  padding: auto;
+  text-align: center;
   color: #fff;
   background-color: red; /* Set the background color for normal state */
   border: 1px solid black;

@@ -104,7 +104,7 @@ const Navbar = () => {
           <ul
             className={`text-white ${
               open ? "block" : "hidden"
-            } menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow text-gray-200 border-2 border-gray-200 bg-opacity-70 drop-shadow-xl bg-black `}
+            } menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow text-gray-200 drop-shadow-xl`}
           >
             {navItems}
           </ul>

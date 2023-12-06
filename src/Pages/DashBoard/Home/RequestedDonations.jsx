@@ -150,7 +150,7 @@ const RequestedDonations = () => {
 
   return (
     <div>
-      <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
+      <div className="flex mx-auto pt-12 text-center text-xl lg:text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         All Pending Donations Requested By {userInfo[0]?.name}
       </div>
       <div className="flex justify-end mx-4 mt-4 mb-2">
@@ -161,7 +161,7 @@ const RequestedDonations = () => {
           {showAllRequests ? "Show Recent 3 Requests" : "Show All Requests"}
         </button>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[60vh] m-12  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[60vh] mx-auto mb-4 lg:m-12  rounded-md border-[5px] border-red-500">
         {loading ? (
           <p className="text-center text-2xl py-6">
             <span className="loading loading-spinner loading-lg"></span>
@@ -313,7 +313,7 @@ const RequestedDonations = () => {
           </table>
         )}
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-12">
         <Link to="/dashboard/my-donation-requests">
           <button className="bg-red-500 rounded-lg py-2 px-8 text-center text-white font-semibold">
             <div className="flex gap-2 items-center">

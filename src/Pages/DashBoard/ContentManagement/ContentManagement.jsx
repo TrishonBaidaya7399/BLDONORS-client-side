@@ -25,7 +25,6 @@ const Search = styled("div")(({ theme }) => ({
   },
 }));
 
-
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
@@ -206,60 +205,69 @@ const ContentManagement = () => {
   };
 
   return (
-    <div className="pb-12 mx-auto">
+    <div className="pb-12 mx-auto overflow-x-hidden">
       <h1 className="text-3xl font-bold border-b-2 border-red-500 mb-6 w-fit text-center mx-auto">
         Content Management
       </h1>
-
-     <div className="flex flex-col md:flex-row justify-center items-center lg:mx-[200px]">
-       {/* <---------------Material UI SearchBar-------------------> */}
-       <Toolbar>
-        <Search
-          sx={{ border: "3px solid red", minWidth: "300px", color: "red" }}
-        >
-          <StyledInputBase
-          sx={{width:"80%", color:"red"}}
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <IconButton onClick={handleSearch}>
-            <SearchIcon sx={{ color: "red" }} />
-          </IconButton>
-        </Search>
-      </Toolbar>
-
-      <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg h-12 w-[95vw] mx-6">
-        <label htmlFor="statusFilter" className="text-white font-semibold">
-          Filter by Status:
-        </label>
-        <select
-          className="rounded-lg"
-          id="statusFilter"
-          onChange={handleFilterChange}
-          value={filterStatus}
-        >
-          <option value="all"> All</option>
-          <option value="published"> Published</option>
-          <option value="draft"> Draft</option>
-        </select>
+      <div className="flex justify-center mb-4">
+        <div className="flex justify-end mx-6 block lg:hidden">
+          <Link to="/dashboard/content-management/add-blog">
+            <button className="border-2 border-red-500 py-[10px] px-8 rounded-lg text-red-500 font-bold">
+              + Add Blog Post
+            </button>
+          </Link>
+        </div>
       </div>
-      <div className="flex justify-end mx-6">
-        <Link to="/dashboard/content-management/add-blog">
-          <button className="border-2 border-red-500 py-[10px] px-8 rounded-lg text-red-500 font-bold">
-            + Add Blog Post
-          </button>
-        </Link>
+
+      <div className="flex flex-col md:flex-row justify-center items-center lg:mx-[200px]">
+        {/* <---------------Material UI SearchBar-------------------> */}
+        <Toolbar>
+          <Search
+            sx={{ border: "3px solid red", minWidth: "300px", color: "red" }}
+          >
+            <StyledInputBase
+              sx={{ width: "80%", color: "red" }}
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <IconButton onClick={handleSearch}>
+              <SearchIcon sx={{ color: "red" }} />
+            </IconButton>
+          </Search>
+        </Toolbar>
+
+        <div className="filter-buttons flex gap-4 lg:mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg h-12 w-[95vw] mx-6">
+          <label htmlFor="statusFilter" className="text-white font-semibold">
+            Filter by Status:
+          </label>
+          <select
+            className="rounded-lg"
+            id="statusFilter"
+            onChange={handleFilterChange}
+            value={filterStatus}
+          >
+            <option value="all"> All</option>
+            <option value="published"> Published</option>
+            <option value="draft"> Draft</option>
+          </select>
+        </div>
+        <div className="flex justify-end mx-6 hidden lg:block">
+          <Link to="/dashboard/content-management/add-blog">
+            <button className="border-2 border-red-500 py-[10px] px-8 rounded-lg text-red-500 font-bold">
+              + Add Blog Post
+            </button>
+          </Link>
+        </div>
       </div>
-     </div>
       {displayPosts?.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:mx-[200px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center lg:mx-[200px] mt-4">
             {displayPosts.slice(startIndex, endIndex).map((post) => (
               <div
                 key={post.id}
-                className="mx-auto card w-[250px] bg-[transparent] w-full drop-shadow-x rounded-mdl shadow-xl p-4"
+                className="md:mx-auto card lg:w-[250px] bg-[transparent] w-[350px] drop-shadow-x rounded-mdl shadow-xl p-4"
               >
                 <div className="relative">
                   <img
@@ -282,9 +290,11 @@ const ContentManagement = () => {
                   />
 
                   <div className="card-actions justify-start">
-                    <button className="text-red-500 font-semibold">
-                      {`Read more->`}
-                    </button>
+                    <div className="card-actions justify-start">
+                      <Link to={`https://bldonors.web.app/blog/${post._id}`}>
+                        <button className="text-red-500 mt-2">{`Read more->`}</button>
+                      </Link>
+                    </div>
                   </div>
                   <div className="actions mt-4">
                     {userInfo[0].role === "Admin" ? (
@@ -353,7 +363,7 @@ const ContentManagement = () => {
         <Pagination
           activePage={activePage}
           itemsCountPerPage={itemsPerPage}
-          totalItemsCount={displayPosts.length}
+          totalItemsCount={filteredPosts.length}
           pageRangeDisplayed={6}
           onChange={(pageNumber) => setActivePage(pageNumber)}
           itemClass="page-item"

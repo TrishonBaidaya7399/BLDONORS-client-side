@@ -2,10 +2,9 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import DataTable from "react-data-table-component";
-import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import useUserInfo from "../../../Hooks/useUserInfo";
+import { NavLink } from "react-router-dom";
 
 const VolunteerAllBloodDonation = () => {
   const userInfo = useUserInfo();
@@ -146,20 +145,28 @@ const VolunteerAllBloodDonation = () => {
           <h1>{"View"}</h1>
         </div>
       ),
-      cell: () => (
-        <Link>
-          <button className="flex items-center gap-1 bg-green-500 rounded-lg p-2 text-white font-semibold">
-            <h1>
-              <FaEye />
-            </h1>
-          </button>
-        </Link>
+      cell: (row) => (
+        <NavLink
+        to={`/dashboard/RequestedDonationDetails/${row?._id}`}
+      >
+        <button
+          disabled={userInfo[0]?.status !== "active"}
+          className={`py-2 px-4 ${
+            userInfo[0]?.status !== "active"
+              ? "button-disabled"
+              : "bg-blue-700 text-white"
+          } rounded-md`}
+          id={row._id}
+        >
+          View
+        </button>
+      </NavLink>
       ),
     },
     {
       name: (
         <div className=" text-center text-[14px] font-bold py-2 rounded-lg">
-          <h1>{"Make Volunteer"}</h1>
+          <h1>{"Done"}</h1>
         </div>
       ),
       cell: (row) => (
@@ -178,7 +185,7 @@ const VolunteerAllBloodDonation = () => {
     {
       name: (
         <div className=" text-center text-[14px] font-bold py-2 rounded-lg">
-          <h1>{"Make Admin"}</h1>
+          <h1>{"Cancel"}</h1>
         </div>
       ),
       cell: (row) => (
@@ -196,11 +203,11 @@ const VolunteerAllBloodDonation = () => {
     },
   ];
   return (
-    <div className="">
+    <div className="w-screen">
       <h1 className="text-4xl font-bold pb-4 mx-auto px-6 w-fit text-center border-b-[3px] border-red-500">
         All Donation Requests
       </h1>
-      <div className="table max-w-screen lg:mx-[20px] mt-6 mb-12 border-[5px] rounded-sm border-red-500 ">
+      <div className="table max-w-screen lg:mx-[20px] mt-6 mb-12 border-[5px] rounded-sm border-red-500 overflow-x-auto">
         {allUsers?.length > 0 ? (
           <DataTable
             columns={columns}

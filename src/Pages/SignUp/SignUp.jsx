@@ -193,7 +193,7 @@ const SignUp = () => {
         <title>{`Bldonors | Sign Up`}</title>
       </Helmet>
       <div
-        className="hero min-h-screen p-[80px]"
+        className="hero min-h-screen p-4 lg:p-[80px]"
         style={{ backgroundImage: `url(${bgImg})` }}
       >
         <div className=" w-full h-full border-[3px] border-red-500 rounded-lg bg-red-500 bg-opacity-10">

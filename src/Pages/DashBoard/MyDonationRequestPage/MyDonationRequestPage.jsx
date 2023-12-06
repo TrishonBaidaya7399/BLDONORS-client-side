@@ -165,7 +165,7 @@ const endIndex = startIndex + itemsPerPage;
 
 return (
     <div className="mx-auto mb-12">
-      <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
+      <div className="flex mx-auto lg:pt-12 text-xl lg:text-3xl font-bold text-black pb-2 w-fit text-center md:px-4 border-b-2 border-red-500">
         {`${userInfo[0]?.name}'s Donation Requests`}
       </div>
       <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-[95vw] mt-6">
@@ -193,7 +193,7 @@ return (
           {showAllRequests ? "Show Recent 3 Requests" : "Show All Requests"}
         </button>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] mx-12 -mt-6  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] mx-auto lg:mx-12 -mt-6  rounded-md border-[5px] border-red-500">
         {loading ? (
           <p className="text-center text-2xl py-6">
             <span className="loading loading-spinner loading-lg"></span>

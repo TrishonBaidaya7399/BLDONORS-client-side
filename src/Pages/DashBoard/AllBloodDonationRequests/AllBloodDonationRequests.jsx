@@ -4,6 +4,7 @@ import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useUserInfo from "../../../Hooks/useUserInfo";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Pagination from "react-js-pagination";
 
 const AllBloodDonationRequests = () => {
   const userInfo = useUserInfo();
@@ -12,8 +13,16 @@ const AllBloodDonationRequests = () => {
   const [upazilas, setUpazilas] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosPublic = useAxiosPublic();
-  const [showAllRequests, setShowAllRequests] = useState(false);
   const axiosSecure = useAxiosSecure();
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filtered, setFiltered] = useState([]);
+
+
+    // Pagination stats
+    const [activePage, setActivePage] = useState(1);
+    const itemsPerPage = 5;
+    const startIndex = (activePage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
 
   useEffect(() => {
     // Fetch districts and upazilas here
@@ -35,12 +44,15 @@ const AllBloodDonationRequests = () => {
       .then((result) => {
         setRequests(result.data);
         setLoading(false); 
+        const recentRequests = result.data; // Update this line
+        setFiltered(recentRequests); // Update this line
       })
       .catch((error) => {
         console.error("Error fetching donation request:", error);
         setLoading(false); 
       });
   }, [axiosPublic, setRequests, userInfo]);
+  
 
   // Function to get district name by ID
   const getDistrictNameById = (districtId) => {
@@ -135,20 +147,43 @@ const AllBloodDonationRequests = () => {
     });
   };
 
+
+  // Function to filter requests based on status
+  const filteredRequests = filtered.filter((request) => {
+    if (filterStatus === "all") {
+      return true; // Show all requests
+    }
+    return request.status === filterStatus;
+  });
+  
+  
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
   return (
     <div>
-      <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
+      <div className="flex mx-auto pt-4 md:pt-0 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         All Pending Donations Requests
       </div>
-      <div className="flex justify-end mx-4 mt-4 mb-2">
-        <button
-          className="text-red-500 underline hidden"
-          onClick={() => setShowAllRequests(!showAllRequests)}
+      <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-[95vw] mt-6">
+        <label htmlFor="statusFilter" className="text-white font-semibold">
+          Filter by Status:
+        </label>
+        <select
+          className="rounded-lg"
+          id="statusFilter"
+          onChange={handleFilterChange}
+          value={filterStatus}
         >
-          {showAllRequests ? "Show Recent 3 Requests" : "Show All Requests"}
-        </button>
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="inprogress">In Progress</option>
+          <option value="done">Done</option>
+          <option value="canceled">Canceled</option>
+        </select>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-w-[92vw] max-h-[100vh] m-12  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-w-[92vw] max-h-[100vh] mx-4 mb-12 lg:m-12  rounded-md border-[5px] border-red-500">
         {loading ? (
           <p className="text-center text-2xl py-6">
             <span className="loading loading-spinner loading-lg"></span>
@@ -169,16 +204,22 @@ const AllBloodDonationRequests = () => {
                 <th>Upazila</th>
                 <th>Donation Status</th>
                 <th>View</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                {
+                  userInfo[0]?.role ==="Admin"
+                  &&
+                  <>
+                  <th>Edit</th>
+                  <th>Delete</th>
+                  </>
+                }
                 <th>Confirm</th>
                 <th>Cancle</th>
               </tr>
             </thead>
             <tbody className="text-sm font-semibold bg-red-500 bg-opacity-20 border-2 border-red-500">
               {/* rows */}
-              {requests ? (
-                requests.map((request) => (
+              {filteredRequests ? (
+                filteredRequests.slice(startIndex, endIndex).map((request) => (
                   <tr key={request._id} className="border-b-2 border-red-500">
                     <td className="border-r-2 border-red-500">
                       {request ? request.recipientName : "Loading..."}
@@ -240,27 +281,35 @@ const AllBloodDonationRequests = () => {
                         </button>
                       </NavLink>
                     </td>
+                   {
+                     userInfo[0]?.role==="Admin"
+                    &&
                     <td className="border-r-2 border-red-500">
-                      <NavLink
-                        to={`/dashboard/EditDonationRequest/${request?._id}`}
-                      >
-                        <button
-                          className="py-2 px-4 bg-yellow-500 text-white rounded-md"
-                          id={request._id}
-                        >
-                          Edit
-                        </button>
-                      </NavLink>
-                    </td>
-                    <td className="border-r-2 border-red-500">
+                    <NavLink
+                      to={`/dashboard/EditDonationRequest/${request?._id}`}
+                    >
                       <button
-                        onClick={() => handleDelete(request._id)}
-                        className="py-2 px-4 bg-red-500 text-white rounded-md"
+                        className="py-2 px-4 bg-yellow-500 text-white rounded-md"
                         id={request._id}
                       >
-                        Delete
+                        Edit
                       </button>
-                    </td>
+                    </NavLink>
+                  </td>
+                   }
+                   {
+                     userInfo[0]?.role ==="Admin"
+                    &&
+                    <td className="border-r-2 border-red-500">
+                    <button
+                      onClick={() => handleDelete(request._id)}
+                      className="py-2 px-4 bg-red-500 text-white rounded-md"
+                      id={request._id}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                   }
                     <td className="border-r-2 border-red-500">
                       <button
                         className={`py-2 px-4 ${
@@ -300,6 +349,19 @@ const AllBloodDonationRequests = () => {
           </table>
         )}
       </div>
+      {/* Pagination */}
+  <div className="pagination-container mx-auto w-fit mt-6 font-bold text-xl mb-10">
+    <Pagination
+      activePage={activePage}
+      itemsCountPerPage={itemsPerPage}
+      totalItemsCount={requests.length}
+      pageRangeDisplayed={5}
+      onChange={(pageNumber) => setActivePage(pageNumber)}
+      itemClass="page-item"
+      linkClass="page-link"
+      
+    />
+  </div>
     </div>
   );
 };

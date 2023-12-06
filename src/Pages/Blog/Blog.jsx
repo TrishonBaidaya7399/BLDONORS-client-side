@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
@@ -82,7 +83,7 @@ const Blog = () => {
               <h2 className="card-title text-red-500 mt-2">{post.title}</h2>
               <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]" dangerouslySetInnerHTML={{ __html: post.content }} />
               <div className="card-actions justify-start">
-                <button className="text-red-500 mt-2">{`Read more->`}</button>
+                <Link to={`https://bldonors.web.app/blog/${post._id}`}><button className="text-red-500 mt-2">{`Read more->`}</button></Link>
               </div>
             </div>
           </div>

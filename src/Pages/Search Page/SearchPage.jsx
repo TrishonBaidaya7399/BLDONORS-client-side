@@ -1,86 +1,192 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+// import { useState, useEffect } from "react";
+// import { Link } from "react-router-dom";
+import { FormControl } from "@mui/base/FormControl";
+import SearchIcon from "@mui/icons-material/Search";
+import { Button, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import useAxiosPublic from "../../Hooks/useAxiosPublic.jsx";
+import SearchTable from "./SearchTable.jsx";
+import search from "../../images/others/searching gif.gif";
 
 const SearchPage = () => {
-  const [posts, setPosts] = useState([]);
-  const [showAll, setShowAll] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const axiosPublic = useAxiosPublic();
+  const [searching, setSearching] = useState(false);
+  const [bloodGroup, setBloodGroup] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [Upazilas, setUpazilas] = useState([]);
+  const [selectedDistrictId, setSelectedDistrictId] = useState("");
+  const [selectedUpazilaId, setSelectedUpazila] = useState("");
+  const [filteredUpazila, setFilteredUpazilas] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
 
   useEffect(() => {
-    // Fetch data from the JSON file (replace with your actual API endpoint)
-    fetch('https://bldonors-server.vercel.app/donationRequest')
-      .then((response) => response.json())
+    fetch("/districts.json")
+      .then((res) => res.json())
       .then((data) => {
-        setPosts(data);
-        console.log(data);
+        setDistricts(data);
       })
-      .catch((error) => console.error('Error fetching data:', error));
+      .catch((error) => console.error("Error fetching districts:", error));
+
+    fetch("/upazilas.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setUpazilas(data);
+      });
   }, []);
 
-  const handleSearch = () => {
-    const filteredPosts = posts.filter((post) => {
-      const isEmailMatch = post.donorEmail.toLowerCase().includes(searchText.toLowerCase());  
-      return isEmailMatch;
-    });
-  
-    setSearchResult(filteredPosts);
-    setShowAll(false);
+  const handleBloodGroupChange = (e) => {
+    e.preventDefault();
+    const selectedBloodGroup = e.target.value;
+    setBloodGroup(selectedBloodGroup);
   };
 
+  const handleDistrictChange = (e) => {
+    e.preventDefault();
+    const district = e.target.value;
+    setSelectedDistrictId(district);
+    const filteredUpazilas = Upazilas.filter(
+      (upazila) => upazila?.district_id === district
+    );
+    setFilteredUpazilas(filteredUpazilas);
+  };
 
-  const displayPosts = searchText
-    ? searchResult.slice(0, showAll ? searchResult.length : 6)
-    : posts.slice(0, showAll ? posts.length : 6);
+  const handleUpazilaChange = (e) => {
+    e.preventDefault();
+    const upazilaId = e.target.value;
+    setSelectedUpazila(upazilaId);
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setSearching(true);
+    // Check if all required fields are filled
+    if (!bloodGroup || !selectedDistrictId || !selectedUpazilaId) {
+      // You can add some user feedback here, e.g., show an error message
+      console.log("Please fill in all required fields");
+      return;
+    }
+    const formData = {
+      bloodGroup: bloodGroup,
+      district: selectedDistrictId,
+      upazila: selectedUpazilaId,
+    };
+    console.log(formData);
+    axiosPublic.get("/donationRequest/search", { params: formData }).then((res) => {
+      console.log(res.data);
+      setSearchResult(res.data);
+      setSearching(false);
+    });
+    console.log("searchResult: ", searchResult);
+  };
 
   return (
     <div className="py-12">
+      <Helmet>
+        <title>{`Bldonors | Search Page`}</title>
+      </Helmet>
       <h1 className="text-3xl font-bold border-b-2 border-red-500 mb-6 w-fit text-center mx-auto">
-        Donation Requests
+        Search Donation Requests
       </h1>
-      <div className="mb-4 mx-auto w-[500px] flex items-center space-x-4 relative">
-        <input
-          type="text"
-          placeholder="Search by donor email..."
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          className="p-3 rounded-l-md w-full border-2 border-red-500"
-        />
-        <button
-          className="absolute -right-20 btn bg-red-500 text-white px-4 border-2 text-xl h-[52px] border-red-500 rounded-none rounded-r-md"
-          onClick={handleSearch}
-        >
-          Search
-        </button>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:mx-[200px]">
-        {displayPosts.map((post) => (
-          <div key={post.id} className="mx-auto card w-[250px] bg-[transparent] w-full drop-shadow-x rounded-mdl bg-red-500 bg-opacity-20 shadow-xl p-4">
-            <div className="flex flex-col w-full">
-              <p className="pt-3 w-full text-sm text-gray-800">
-                <span className="text-gray-500 font-bold"><span className='text-md font-bold text-gray-600'>Status: </span>{post.status}</span>
-              </p>
-              <h2 className="card-title text-red-500 mt-2"><span className='text-md font-bold text-gray-600'>Recipient: </span>{post.recipientName}</h2>
-              <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]"><span className='text-md font-bold text-gray-600'>Hospital: </span>{post.hospitalName}</p>
-              <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]"><span className='text-md font-bold text-gray-600'>Date: </span>{post.date} - at - {post.time}</p>
-              <p className="pb-2 w-full text-gray-600 overflow-hidden max-h-[3em]"><span className='text-md font-bold text-gray-600'>Blood Group: </span><span className='text-red-500 text-xl font-bold'>{post.bloodGroup}</span></p>
-              <div className="card-actions justify-start">
-                <Link to={`https://bldonors.web.app/bloodDonationDetails/${post._id}`}>
-                <button className="text-red-500 mt-2">{`Read more->`}</button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      {(posts.length > 6 || searchResult.length > 6) && (
-        <div className="text-center mt-6">
-          <button
-            className="btn bg-red-500 text-white px-4 py-2"
-            onClick={() => setShowAll(!showAll)}
+      <div className="mx-12 p-6 border-2 border-red-500 border-opacity-20 rounded-lg bg-red-500 bg-opacity-10 shadow-xl">
+        <Grid container spacing={2}>
+          <Grid item xs={12} lg={4} md={4} sm={6}>
+            <FormControl fullwidth>
+              <InputLabel id="blood-group-label">Blood Group</InputLabel>
+              <Select
+                fullWidth
+                labelId="blood-group-label"
+                id="blood-group"
+                value={bloodGroup}
+                onChange={handleBloodGroupChange}
+                required
+              >
+                <MenuItem value="A+">A+</MenuItem>
+                <MenuItem value="A-">A-</MenuItem>
+                <MenuItem value="B+">B+</MenuItem>
+                <MenuItem value="B-">B-</MenuItem>
+                <MenuItem value="AB+">AB+</MenuItem>
+                <MenuItem value="AB-">AB-</MenuItem>
+                <MenuItem value="O+">O+</MenuItem>
+                <MenuItem value="O-">O-</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} lg={4} md={4} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="district-group-label">District</InputLabel>
+              <Select
+                fullWidth
+                labelId="district-group-label"
+                id="district"
+                value={selectedDistrictId}
+                onChange={handleDistrictChange}
+                required
+              >
+                {districts.map((district) => (
+                  <MenuItem key={district.id} value={district.id}>
+                    {district.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} lg={4} md={4} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel id="upazila-group-label">Upazila</InputLabel>
+              <Select
+                fullWidth
+                labelId="upazila-group-label"
+                id="upazila"
+                value={selectedUpazilaId}
+                onChange={handleUpazilaChange}
+                required
+              >
+                {filteredUpazila.map((upazila) => (
+                  <MenuItem key={upazila.id} value={upazila.id}>
+                    {upazila.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Button
+            type="submit"
+            onClick={handleSearch}
+            sx={{
+              marginTop: "15px",
+              marginInline: "auto",
+              px: "50px",
+              py: "10px",
+              bgcolor: "red",
+              color: "white",
+              fontWeight: "700",
+              fontSize: "16px",
+              opacity: "70%",
+            }}
+            slots={{ root: "span" }}
           >
-            {showAll ? 'See less' : 'See more'}
-          </button>
+            Search
+            <SearchIcon sx={{ ml: "5px" }} />
+          </Button>
+        </Grid>
+      </div>
+      {searchResult.length > 0 ? (
+        searching ? (
+          <div>
+            <img className="mx-auto w-[200px] my-12" src={search} alt="" />
+          </div>
+        ) : (
+          <div className="table max-w-[93%] mx-auto my-4 border-2 border-red-500 border-opacity-50 overflow-x-auto">
+            <SearchTable data={searchResult} />
+          </div>
+        )
+      ) : (
+        <div className="text-center text-3xl  font-bold my-12">
+          <h1>{""}</h1>
         </div>
       )}
     </div>

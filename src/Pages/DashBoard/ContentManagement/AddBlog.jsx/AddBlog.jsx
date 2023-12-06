@@ -87,7 +87,7 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="flex flex-col border-[3px] rounded-lg p-12 mb-12 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
+    <div className="flex flex-col border-[3px] rounded-lg p-4 lg:p-12 mb-12 mx-4 lg:mx-[200px] border-red-500 bg-red-500 bg-opacity-20">
       <Helmet>
         <title>{`Bldonors | Add Blog`}</title>
       </Helmet>
@@ -96,7 +96,7 @@ const AddBlog = () => {
           Add A New Blog
         </h1>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="card-body">
+      <form onSubmit={handleSubmit(onSubmit)} className="lg:card-body">
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text text-gray-700 font-semibold">

@@ -205,11 +205,11 @@ const endIndex = startIndex + itemsPerPage;
 
 
 return (
-    <div className="mx-auto mb-12">
+    <div className="mx-auto mb-12 overflow-x-hidden">
       <div className="flex mx-auto pt-12 text-3xl font-bold text-black pb-2 w-fit px-4 border-b-2 border-red-500">
         All Registered Users
       </div>
-      <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-[95vw] mt-6">
+      <div className="filter-buttons flex gap-4 mx-auto justify-center bg-red-500 w-fit px-8 py-2 rounded-lg mb-8 w-fit mt-6">
         <label htmlFor="statusFilter" className="text-white font-semibold">
           Filter by Status:
         </label>
@@ -224,7 +224,7 @@ return (
           <option value="inactive">Blocked</option>
         </select>
       </div>
-      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] mx-12 -mt-6  rounded-md border-[5px] border-red-500">
+      <div className="overflow-x-auto overflow-y-auto max-w-[90vw] max-h-[80vh] mx-auto lg:mx-12 -mt-6  rounded-md border-[5px] border-red-500">
         {loading ? (
           <p className="text-center text-2xl py-6">
             <span className="loading loading-spinner loading-lg"></span>

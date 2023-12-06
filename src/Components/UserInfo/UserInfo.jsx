@@ -91,7 +91,7 @@ const UserInfo = () => {
             backgroundPosition: "center",
           }}
         >
-          <img src="../../../src/images/bg/frame.png" className="w-full h-full" />
+          <img src="https://i.ibb.co/6JhvNW2/frame.png" className="w-full h-full" />
         </div>
       </div>
     </div>

@@ -27,8 +27,9 @@ import ContentManagement from "../../Pages/DashBoard/ContentManagement/ContentMa
 import AddBlog from "../../Pages/DashBoard/ContentManagement/AddBlog.jsx/AddBlog";
 import PrivateRoute from "../../Providers/PrivateRoute";
 import SearchPage from "../../Pages/Search Page/SearchPage";
-import VolunteerAllBloodDonation from "../../Pages/DashBoard/VolunteerAllBloodDonation/VolunteerAllBloodDonation";
+// import VolunteerAllBloodDonation from "../../Pages/DashBoard/VolunteerAllBloodDonation/VolunteerAllBloodDonation";
 import ErrorPage from "../../Error page/error";
+import BlogDetails from "../../Pages/Blog/BlogDetails";
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +44,11 @@ export const router = createBrowserRouter([
             {
                 path: "/blog",
                 element: <Blog/>
+            },
+            {
+                path: "/blog/:id",
+                element: <PrivateRoute><BlogDetails/></PrivateRoute>,
+                loader: ({params})=> fetch(`https://bldonors-server.vercel.app/donationRequest/${params.id}`),
             },
             {
                 path: "/login",
@@ -124,10 +130,6 @@ export const router = createBrowserRouter([
             {
                 path:"create-donation-request",
                 element: <CreateRequestToDonate/>
-            },
-            {
-                path:"volunteer-all-blood-donation-request",
-                element: <VolunteerAllBloodDonation/>
             },
             {
                 path:"my-donation-requests",

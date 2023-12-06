@@ -79,13 +79,13 @@ const EditDonationRequest = () => {
   };
 
   useEffect(() => {
-    fetch("/public/districts.json")
+    fetch("/districts.json")
       .then((response) => response.json())
       .then((data) => setDistricts(data))
       .catch((error) => console.error("Error fetching districts:", error))
       .finally(() => setLoading(false));
 
-    fetch("/public/upazilas.json")
+    fetch("/upazilas.json")
       .then((response) => response.json())
       .then((data) => setUpazilas(data))
       .catch((error) => console.error("Error fetching upazilas:", error));
