@@ -8,8 +8,8 @@
 
 ### User Roles and Permissions
 - Admin 🌐: Access to all features.
-Donor🩸: Register, view/respond to donation requests, and maintain a profile.
-Volunteer 🤝: Create/manage donation requests.
+- Donor🩸: Register, view/respond to donation requests, and maintain a profile.
+- Volunteer 🤝: Create/manage donation requests.
 
 ### User Authentication (public)
 - Registration:
