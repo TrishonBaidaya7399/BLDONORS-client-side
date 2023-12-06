@@ -1,6 +1,12 @@
 # BLDONORS- Blood donation MERN web app
 ## Live link: https://bldonors.web.app
 
+## Technology Used: 
+- React, Node, Express, JWT, HTML, CSS, JS
+- MongoDB, Firebase
+- Tailwind CSS, DaisyUI, MaterialUI, Tanstack
+
+
 ## Key Features: 
 ### Introduction
 - Purpose: Create a user-friendly platform for blood donation activities.
